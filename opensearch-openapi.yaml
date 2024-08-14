@@ -4406,6 +4406,212 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/sql.settings@200'
+  /_plugins/_replication/_autofollow:
+    delete:
+      operationId: replication.delete_replication_rule.0
+      x-operation-group: replication.delete_replication_rule
+      x-version-added: '1.1'
+      description: Deletes the specified replication rule.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#delete-replication-rule
+      requestBody:
+        $ref: '#/components/requestBodies/replication.delete_replication_rule'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.delete_replication_rule@200'
+      parameters:
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+    post:
+      operationId: replication.create_replication_rule.0
+      x-operation-group: replication.create_replication_rule
+      x-version-added: '1.1'
+      description: Automatically starts replication on indexes matching a specified pattern.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#create-replication-rule
+      requestBody:
+        $ref: '#/components/requestBodies/replication.create_replication_rule'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.create_replication_rule@200'
+      parameters:
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+  /_plugins/_replication/{index}/_pause:
+    post:
+      operationId: replication.pause.0
+      x-operation-group: replication.pause
+      x-version-added: '1.1'
+      description: Pauses replication of the leader index.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#pause-replication
+      parameters:
+        - $ref: '#/components/parameters/replication.pause::path.index'
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+      requestBody:
+        $ref: '#/components/requestBodies/replication.pause'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.pause@200'
+  /_plugins/_replication/{index}/_resume:
+    post:
+      operationId: replication.resume.0
+      x-operation-group: replication.resume
+      x-version-added: '1.1'
+      description: Resumes replication of the leader index.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#resume-replication
+      parameters:
+        - $ref: '#/components/parameters/replication.resume::path.index'
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+      requestBody:
+        $ref: '#/components/requestBodies/replication.resume'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.resume@200'
+  /_plugins/_replication/{index}/_start:
+    put:
+      operationId: replication.start.0
+      x-operation-group: replication.start
+      x-version-added: '1.1'
+      description: Initiate replication of an index from the leader cluster to the follower cluster.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#start-replication
+      parameters:
+        - $ref: '#/components/parameters/replication.start::path.index'
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+      requestBody:
+        $ref: '#/components/requestBodies/replication.start'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.start@200'
+  /_plugins/_replication/{index}/_status:
+    get:
+      operationId: replication.status.0
+      x-operation-group: replication.status
+      x-version-added: '1.1'
+      description: Gets the status of index replication.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#get-replication-status
+      parameters:
+        - $ref: '#/components/parameters/replication.status::path.index'
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.status@200'
+  /_plugins/_replication/{index}/_stop:
+    post:
+      operationId: replication.stop.0
+      x-operation-group: replication.stop
+      x-version-added: '1.1'
+      description: Terminates replication and converts the follower index to a standard index.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#stop-replication
+      parameters:
+        - $ref: '#/components/parameters/replication.stop::path.index'
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+      requestBody:
+        $ref: '#/components/requestBodies/replication.stop'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.stop@200'
+  /_plugins/_replication/{index}/_update:
+    put:
+      operationId: replication.update_settings.0
+      x-operation-group: replication.update_settings
+      x-version-added: '1.1'
+      description: Updates settings on the follower index.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#update-settings
+      parameters:
+        - $ref: '#/components/parameters/replication.update_settings::path.index'
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+      requestBody:
+        $ref: '#/components/requestBodies/replication.update_settings'
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.update_settings@200'
+  /_plugins/_replication/autofollow_stats:
+    get:
+      operationId: replication.autofollow_stats.0
+      x-operation-group: replication.autofollow_stats
+      x-version-added: '1.1'
+      description: Gets information about auto-follow activity and any replication rules configured on the specified cluster.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#get-auto-follow-stats
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.autofollow_stats@200'
+      parameters:
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+  /_plugins/_replication/follower_stats:
+    get:
+      operationId: replication.follower_stats.0
+      x-operation-group: replication.follower_stats
+      x-version-added: '1.1'
+      description: Gets information about follower (syncing) indexes on a specified cluster.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#get-follower-cluster-stats
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.follower_stats@200'
+      parameters:
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
+  /_plugins/_replication/leader_stats:
+    get:
+      operationId: replication.leader_stats.0
+      x-operation-group: replication.leader_stats
+      x-version-added: '1.1'
+      description: Gets information about replicated leader indexes on a specified cluster.
+      externalDocs:
+        url: https://opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/#get-leader-cluster-stats
+      responses:
+        '200':
+          $ref: '#/components/responses/replication.leader_stats@200'
+      parameters:
+        - $ref: '#/components/parameters/_global::query.pretty'
+        - $ref: '#/components/parameters/_global::query.human'
+        - $ref: '#/components/parameters/_global::query.error_trace'
+        - $ref: '#/components/parameters/_global::query.source'
+        - $ref: '#/components/parameters/_global::query.filter_path'
   /_plugins/_rollup/jobs/{id}:
     delete:
       operationId: rollups.delete.0
@@ -20568,6 +20774,54 @@ components:
       schema:
         $ref: '#/components/schemas/_common:Id'
       style: simple
+    replication.pause::path.index:
+      in: path
+      name: index
+      description: Name of the data stream, index, or index alias to perform bulk actions on.
+      required: true
+      schema:
+        $ref: '#/components/schemas/_common:IndexName'
+      style: simple
+    replication.resume::path.index:
+      in: path
+      name: index
+      description: Name of the data stream, index, or index alias to perform bulk actions on.
+      required: true
+      schema:
+        $ref: '#/components/schemas/_common:IndexName'
+      style: simple
+    replication.start::path.index:
+      in: path
+      name: index
+      description: Name of the data stream, index, or index alias to perform bulk actions on.
+      required: true
+      schema:
+        $ref: '#/components/schemas/_common:IndexName'
+      style: simple
+    replication.status::path.index:
+      in: path
+      name: index
+      description: Name of the data stream, index, or index alias to perform bulk actions on.
+      required: true
+      schema:
+        $ref: '#/components/schemas/_common:IndexName'
+      style: simple
+    replication.stop::path.index:
+      in: path
+      name: index
+      description: Name of the data stream, index, or index alias to perform bulk actions on.
+      required: true
+      schema:
+        $ref: '#/components/schemas/_common:IndexName'
+      style: simple
+    replication.update_settings::path.index:
+      in: path
+      name: index
+      description: Name of the data stream, index, or index alias to perform bulk actions on.
+      required: true
+      schema:
+        $ref: '#/components/schemas/_common:IndexName'
+      style: simple
     rollups.delete::path.id:
       name: id
       in: path
@@ -23765,6 +24019,48 @@ components:
                   If no `id` or `<templated-id>` is specified, this parameter is required.
                 type: string
             description: The search definition template and its params
+    replication.create_replication_rule:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:CreateReplicationRule'
+      required: true
+    replication.delete_replication_rule:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:DeleteReplicationRule'
+      required: true
+    replication.pause:
+      content:
+        application/json:
+          schema:
+            type: object
+      required: true
+    replication.resume:
+      content:
+        application/json:
+          schema:
+            type: object
+      required: true
+    replication.start:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:Replication'
+      required: true
+    replication.stop:
+      content:
+        application/json:
+          schema:
+            type: object
+      required: true
+    replication.update_settings:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:UpdateSettings'
+      required: true
     rollups.put:
       content:
         application/json:
@@ -26101,6 +26397,82 @@ components:
                   type: object
             required:
               - template_output
+    replication.autofollow_stats@200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:AutoFollowStatus'
+    replication.create_replication_rule@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
+    replication.delete_replication_rule@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
+    replication.follower_stats@200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:FollowerStatus'
+    replication.leader_stats@200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:LeaderStatus'
+    replication.pause@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
+    replication.resume@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
+    replication.start@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
+    replication.status@200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/replication._common:Status'
+    replication.stop@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
+    replication.update_settings@200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              acknowledged:
+                type: boolean
     rollups.delete@200: {}
     rollups.explain@200:
       content:
@@ -48564,6 +48936,220 @@ components:
         successful:
           type: integer
           format: int32
+    replication._common:AutoFollowStats:
+      type: object
+      properties:
+        name:
+          type: string
+        pattern:
+          type: string
+        num_success_start_replication:
+          type: number
+        num_failed_start_replication:
+          type: number
+        num_failed_leader_calls:
+          type: number
+        failed_indices:
+          type: array
+          items:
+            type: string
+    replication._common:AutoFollowStatus:
+      type: object
+      properties:
+        num_success_start_replication:
+          type: number
+        num_failed_start_replication:
+          type: number
+        num_failed_leader_calls:
+          type: number
+        failed_indices:
+          type: array
+          items:
+            type: string
+        autofollow_stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/replication._common:AutoFollowStats'
+    replication._common:CreateReplicationRule:
+      type: object
+      properties:
+        leader_alias:
+          type: string
+        name:
+          type: string
+        pattern:
+          type: string
+        use_roles:
+          $ref: '#/components/schemas/replication._common:UseRoles'
+    replication._common:DeleteReplicationRule:
+      type: object
+      properties:
+        leader_alias:
+          type: string
+        name:
+          type: string
+    replication._common:FollowerStatus:
+      type: object
+      properties:
+        num_syncing_indices:
+          type: number
+        num_bootstrapping_indices:
+          type: number
+        num_paused_indices:
+          type: number
+        num_failed_indices:
+          type: number
+        num_shard_tasks:
+          type: number
+        num_index_tasks:
+          type: number
+        operations_written:
+          type: number
+        operations_read:
+          type: number
+        failed_read_requests:
+          type: number
+        throttled_read_requests:
+          type: number
+        failed_write_requests:
+          type: number
+        throttled_write_requests:
+          type: number
+        follower_checkpoint:
+          type: number
+        leader_checkpoint:
+          type: number
+        total_write_time_millis:
+          type: number
+        index_stats:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/replication._common:IndexFollowerStatus'
+    replication._common:IndexFollowerStatus:
+      type: object
+      properties:
+        operations_written:
+          type: number
+        operations_read:
+          type: number
+        failed_read_requests:
+          type: number
+        throttled_read_requests:
+          type: number
+        failed_write_requests:
+          type: number
+        throttled_write_requests:
+          type: number
+        follower_checkpoint:
+          type: number
+        leader_checkpoint:
+          type: number
+        total_write_time_millis:
+          type: number
+    replication._common:IndexSchema:
+      type: object
+      properties:
+        number_of_shards:
+          type: integer
+        number_of_replicas:
+          type: integer
+    replication._common:IndexStatus:
+      type: object
+      properties:
+        operations_read:
+          type: number
+        translog_size_bytes:
+          type: number
+        operations_read_lucene:
+          type: number
+        operations_read_translog:
+          type: number
+        total_read_time_lucene_millis:
+          type: number
+        total_read_time_translog_millis:
+          type: number
+        bytes_read:
+          type: number
+    replication._common:LeaderStatus:
+      type: object
+      properties:
+        num_replicated_indices:
+          type: number
+        operations_read:
+          type: number
+        translog_size_bytes:
+          type: number
+        operations_read_lucene:
+          type: number
+        operations_read_translog:
+          type: number
+        total_read_time_lucene_millis:
+          type: number
+        total_read_time_translog_millis:
+          type: number
+        bytes_read:
+          type: number
+        index_stats:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/replication._common:IndexStatus'
+    replication._common:Replication:
+      type: object
+      properties:
+        leader_alias:
+          type: string
+        leader_index:
+          type: string
+        use_roles:
+          $ref: '#/components/schemas/replication._common:UseRoles'
+    replication._common:SettingsBody:
+      type: object
+      properties:
+        index:
+          $ref: '#/components/schemas/replication._common:IndexSchema'
+    replication._common:Status:
+      type: object
+      properties:
+        status:
+          type: string
+        reason:
+          type: string
+        leader_alias:
+          type: string
+        leader_index:
+          type: string
+        follower_index:
+          type: string
+        syncing_details:
+          $ref: '#/components/schemas/replication._common:SyncingDetails'
+    replication._common:SyncingDetails:
+      type: object
+      properties:
+        leader_checkpoint:
+          type: integer
+        follower_checkpoint:
+          type: integer
+        seq_no:
+          type: integer
+    replication._common:UpdateSettings:
+      type: object
+      properties:
+        settings:
+          anyOf:
+            - type: object
+              properties:
+                index.number_of_shards:
+                  type: integer
+                index.number_of_replicas:
+                  type: integer
+            - $ref: '#/components/schemas/replication._common:SettingsBody'
+    replication._common:UseRoles:
+      type: object
+      properties:
+        leader_cluster_role:
+          type: string
+        follower_cluster_role:
+          type: string
     rollups._common:Continuous:
       type: object
       properties:
