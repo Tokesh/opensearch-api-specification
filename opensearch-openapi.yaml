@@ -2486,9 +2486,7 @@ paths:
         url: https://opensearch.org/docs/latest
       parameters:
         - $ref: '#/components/parameters/indices.simulate_index_template___path.name'
-        - $ref: '#/components/parameters/indices.simulate_index_template___query.cause'
         - $ref: '#/components/parameters/indices.simulate_index_template___query.cluster_manager_timeout'
-        - $ref: '#/components/parameters/indices.simulate_index_template___query.create'
         - $ref: '#/components/parameters/indices.simulate_index_template___query.master_timeout'
         - $ref: '#/components/parameters/_global___query.pretty'
         - $ref: '#/components/parameters/_global___query.human'
@@ -14824,13 +14822,13 @@ components:
     asynchronous_search.search___query.index:
       name: index
       in: query
-      description: The name of the index to be searched.
+      description: The name of the index to be searched. Can be an individual name, a comma-separated list of indexes, or a wildcard expression of index names.
       schema:
         type: string
     asynchronous_search.search___query.keep_alive:
       name: keep_alive
       in: query
-      description: The amount of time that the result is saved in the cluster.
+      description: The amount of time that the result is saved in the cluster. For example, `2d` means that the results are stored in the cluster for 48 hours. The saved search results are deleted after this period or if the search is canceled. Note that this includes the query execution time. If the query overruns this time, the process cancels this query automatically.
       schema:
         type: string
     asynchronous_search.search___query.keep_on_completion:
@@ -14842,7 +14840,7 @@ components:
     asynchronous_search.search___query.wait_for_completion_timeout:
       name: wait_for_completion_timeout
       in: query
-      description: The amount of time that you plan to wait for the results.
+      description: The amount of time that you plan to wait for the results. You can poll the remaining results based on an ID. The maximum value is `300s`. Default is `1s`.
       schema:
         type: string
     bulk_stream___path.index:
@@ -21163,14 +21161,6 @@ components:
       schema:
         $ref: '#/components/schemas/_common___Name'
       style: simple
-    indices.simulate_index_template___query.cause:
-      name: cause
-      in: query
-      description: User defined reason for dry-run creating the new template for simulation purposes.
-      schema:
-        type: string
-        default: 'false'
-        description: User defined reason for dry-run creating the new template for simulation purposes.
     indices.simulate_index_template___query.cluster_manager_timeout:
       name: cluster_manager_timeout
       in: query
@@ -21178,19 +21168,6 @@ components:
       schema:
         $ref: '#/components/schemas/_common___Duration'
       x-version-added: '2.0'
-    indices.simulate_index_template___query.create:
-      in: query
-      name: create
-      description: |-
-        If `true`, the template passed in the body is only used if no existing
-        templates match the same index patterns. If `false`, the simulation uses
-        the template with the highest priority. Note that the template is not
-        permanently added or updated in either case; it is only used for the
-        simulation.
-      schema:
-        type: boolean
-        default: false
-      style: form
     indices.simulate_index_template___query.master_timeout:
       in: query
       name: master_timeout
@@ -30360,7 +30337,10 @@ components:
             type: object
             properties:
               result:
-                type: object
+                oneOf:
+                  - type: number
+                  - type: string
+                  - type: boolean
             required:
               - result
       description: ''
@@ -43627,7 +43607,6 @@ components:
       required:
         - document
         - index
-        - query
     _core.search_shards___ShardStoreIndex:
       type: object
       properties:
@@ -44116,8 +44095,7 @@ components:
           $ref: '#/components/schemas/_core.explain___Explanation'
         fields:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: true
         highlight:
           type: object
           additionalProperties:
@@ -50806,7 +50784,6 @@ components:
           $ref: '#/components/schemas/indices._common___IndexSettings'
       required:
         - aliases
-        - mappings
         - settings
     indices.stats___AllIndicesStats:
       type: object
@@ -53804,17 +53781,22 @@ components:
           description: Size of buffer pools in bytes.
           $ref: '#/components/schemas/_common___ByteCount'
     nodes._common___NodeReloadError:
+      allOf:
+        - $ref: '#/components/schemas/nodes._common___NodeReloadResponse'
+        - type: object
+          properties:
+            reload_exception:
+              $ref: '#/components/schemas/_common___ErrorCause'
+    nodes._common___NodeReloadResponse:
       type: object
       properties:
         name:
           $ref: '#/components/schemas/_common___Name'
-        reload_exception:
-          $ref: '#/components/schemas/_common___ErrorCause'
       required:
         - name
     nodes._common___NodeReloadResult:
-      oneOf:
-        - $ref: '#/components/schemas/nodes._common___Stats'
+      anyOf:
+        - $ref: '#/components/schemas/nodes._common___NodeReloadResponse'
         - $ref: '#/components/schemas/nodes._common___NodeReloadError'
     nodes._common___NodesResponseBase:
       type: object
@@ -55213,6 +55195,7 @@ components:
       type: string
       enum:
         - _all
+        - aggregations
         - rest_actions
     nodes.usage___NodeUsage:
       type: object
@@ -55230,8 +55213,6 @@ components:
           additionalProperties:
             type: object
       required:
-        - aggregations
-        - rest_actions
         - since
         - timestamp
     nodes.usage___ResponseBase:
