@@ -5065,8 +5065,8 @@ paths:
     get:
       operationId: observability.get_localstats.0
       x-operation-group: observability.get_localstats
-      x-version-added: '1.1'
-      description: Retrieves Local Stats of all observability objects.
+      x-version-added: '2.5'
+      description: Retrieves local stats of all observability objects.
       responses:
         '200':
           $ref: '#/components/responses/observability.get_localstats___200'
@@ -5630,8 +5630,8 @@ paths:
       externalDocs:
         url: https://opensearch.org/docs/latest/im-plugin/index-rollups/rollup-api/#create-or-update-an-index-rollup-job
       responses:
-        '200':
-          $ref: '#/components/responses/rollups.put___200'
+        '201':
+          $ref: '#/components/responses/rollups.put___201'
       parameters:
         - $ref: '#/components/parameters/rollups.put___path.id'
         - $ref: '#/components/parameters/rollups.put___query.if_primary_term'
@@ -7815,6 +7815,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/transforms.put___200'
+        '201':
+          $ref: '#/components/responses/transforms.put___201'
   /_plugins/_transform/{id}/_explain:
     get:
       operationId: transforms.explain.0
@@ -13128,8 +13130,8 @@ paths:
       externalDocs:
         url: https://opensearch.org/docs/latest/im-plugin/index-rollups/rollup-api/#create-or-update-an-index-rollup-job
       responses:
-        '200':
-          $ref: '#/components/responses/rollups.put___200'
+        '201':
+          $ref: '#/components/responses/rollups.put___201'
       parameters:
         - $ref: '#/components/parameters/rollups.put___path.id'
         - $ref: '#/components/parameters/rollups.put___query.if_primary_term'
@@ -15204,63 +15206,63 @@ components:
     cat.aliases___query.expand_wildcards:
       in: query
       name: expand_wildcards
-      description: Whether to expand wildcard expression to concrete indexes that are open, closed or both.
+      description: Expands wildcard expressions to concrete indexes. Combine multiple values with commas. Supported values are `all`, `open`, `closed`, `hidden`, and `none`.
       schema:
         $ref: '#/components/schemas/_common___ExpandWildcards'
       style: form
     cat.aliases___query.format:
       name: format
       in: query
-      description: A short version of the Accept header (for example, `json`, `yaml`).
+      description: A short version of the `Accept` header, such as `json` or `yaml`.
       schema:
         type: string
-        description: A short version of the Accept header (for example, `json`, `yaml`).
+        description: A short version of the `Accept` header, such as `json` or `yaml`.
     cat.aliases___query.h:
       name: h
       in: query
-      description: Comma-separated list of column names to display.
+      description: A comma-separated list of column names to display.
       style: form
       schema:
         type: array
         items:
           type: string
-        description: Comma-separated list of column names to display.
+        description: A comma-separated list of column names to display.
       explode: true
     cat.aliases___query.help:
       name: help
       in: query
-      description: Return help information.
+      description: Returns help information.
       schema:
-        description: Return help information.
+        description: Returns help information.
         type: boolean
         default: false
     cat.aliases___query.local:
       name: local
       in: query
-      description: Return local information, do not retrieve the state from cluster-manager node.
+      description: Whether to return information from the local node only instead of from the cluster manager node.
       schema:
         type: boolean
         default: false
-        description: Return local information, do not retrieve the state from cluster-manager node.
+        description: Whether to return information from the local node only instead of from the cluster manager node.
     cat.aliases___query.s:
       name: s
       in: query
-      description: Comma-separated list of column names or column aliases to sort by.
+      description: A comma-separated list of column names or column aliases to sort by.
       style: form
       schema:
         type: array
         items:
           type: string
-        description: Comma-separated list of column names or column aliases to sort by.
+        description: A comma-separated list of column names or column aliases to sort by.
       explode: true
     cat.aliases___query.v:
       name: v
       in: query
-      description: Verbose mode. Display column headers.
+      description: Enables verbose mode, which displays column headers.
       schema:
         type: boolean
         default: false
-        description: Verbose mode. Display column headers.
+        description: Enables verbose mode, which displays column headers.
     cat.all_pit_segments___query.bytes:
       name: bytes
       in: query
@@ -15315,7 +15317,7 @@ components:
     cat.allocation___path.node_id:
       in: path
       name: node_id
-      description: Comma-separated list of node identifiers or names used to limit the returned information.
+      description: A comma-separated list of node IDs or names used to limit the returned information.
       required: true
       schema:
         $ref: '#/components/schemas/_common___NodeIds'
@@ -15323,55 +15325,55 @@ components:
     cat.allocation___query.bytes:
       in: query
       name: bytes
-      description: The unit used to display byte values.
+      description: The units used to display byte values.
       schema:
         $ref: '#/components/schemas/_common___ByteUnit'
       style: form
     cat.allocation___query.cluster_manager_timeout:
       name: cluster_manager_timeout
       in: query
-      description: Operation timeout for connection to cluster-manager node.
+      description: A timeout for connection to the cluster manager node.
       schema:
         $ref: '#/components/schemas/_common___Duration'
       x-version-added: '2.0'
     cat.allocation___query.format:
       name: format
       in: query
-      description: A short version of the Accept header (for example, `json`, `yaml`).
+      description: A short version of the HTTP `Accept` header, such as `json` or `yaml`.
       schema:
         type: string
-        description: A short version of the Accept header (for example, `json`, `yaml`).
+        description: A short version of the HTTP `Accept` header, such as `json` or `yaml`.
     cat.allocation___query.h:
       name: h
       in: query
-      description: Comma-separated list of column names to display.
+      description: A comma-separated list of column names to display.
       style: form
       schema:
         type: array
         items:
           type: string
-        description: Comma-separated list of column names to display.
+        description: A comma-separated list of column names to display.
       explode: true
     cat.allocation___query.help:
       name: help
       in: query
-      description: Return help information.
+      description: Returns help information.
       schema:
         type: boolean
         default: false
-        description: Return help information.
+        description: Returns help information.
     cat.allocation___query.local:
       name: local
       in: query
-      description: Return local information, do not retrieve the state from cluster-manager node.
+      description: Returns local information but does not retrieve the state from cluster-manager node.
       schema:
         type: boolean
         default: false
-        description: Return local information, do not retrieve the state from cluster-manager node.
+        description: Returns local information but does not retrieve the state from cluster-manager node.
     cat.allocation___query.master_timeout:
       name: master_timeout
       in: query
-      description: Operation timeout for connection to cluster-manager node.
+      description: A timeout for connection to the cluster manager node.
       schema:
         $ref: '#/components/schemas/_common___Duration'
       x-version-deprecated: '2.0'
@@ -15380,46 +15382,46 @@ components:
     cat.allocation___query.s:
       name: s
       in: query
-      description: Comma-separated list of column names or column aliases to sort by.
+      description: A comma-separated list of column names or column aliases to sort by.
       style: form
       schema:
         type: array
         items:
           type: string
-        description: Comma-separated list of column names or column aliases to sort by.
+        description: A comma-separated list of column names or column aliases to sort by.
       explode: true
     cat.allocation___query.v:
       name: v
       in: query
-      description: Verbose mode. Display column headers.
+      description: Enables verbose mode, which displays column headers.
       schema:
         type: boolean
         default: false
-        description: Verbose mode. Display column headers.
+        description: Enables verbose mode, which displays column headers.
     cat.cluster_manager___query.cluster_manager_timeout:
       name: cluster_manager_timeout
       in: query
-      description: Operation timeout for connection to cluster-manager node.
+      description: A timeout for connection to the cluster manager node.
       schema:
         $ref: '#/components/schemas/_common___Duration'
       x-version-added: '2.0'
     cat.cluster_manager___query.format:
       name: format
       in: query
-      description: A short version of the Accept header (for example, `json`, `yaml`).
+      description: A short version of the HTTP `Accept` header, such as `json` or `yaml`.
       schema:
         type: string
-        description: A short version of the Accept header (for example, `json`, `yaml`).
+        description: A short version of the HTTP `Accept` header, such as `json` or `yaml`.
     cat.cluster_manager___query.h:
       name: h
       in: query
-      description: Comma-separated list of column names to display.
+      description: A comma-separated list of column names to display.
       style: form
       schema:
         type: array
         items:
           type: string
-        description: Comma-separated list of column names to display.
+        description: A comma-separated list of column names to display.
       explode: true
     cat.cluster_manager___query.help:
       name: help
@@ -15440,7 +15442,7 @@ components:
     cat.cluster_manager___query.master_timeout:
       name: master_timeout
       in: query
-      description: Operation timeout for connection to cluster-manager node.
+      description: A timeout for connection to the cluster manager node.
       schema:
         $ref: '#/components/schemas/_common___Duration'
       x-version-deprecated: '2.0'
@@ -15449,22 +15451,22 @@ components:
     cat.cluster_manager___query.s:
       name: s
       in: query
-      description: Comma-separated list of column names or column aliases to sort by.
+      description: A comma-separated list of column names or column aliases to sort by.
       style: form
       schema:
         type: array
         items:
           type: string
-        description: Comma-separated list of column names or column aliases to sort by.
+        description: A comma-separated list of column names or column aliases to sort by.
       explode: true
     cat.cluster_manager___query.v:
       name: v
       in: query
-      description: Verbose mode. Display column headers.
+      description: Enables verbose mode, which displays column headers.
       schema:
         type: boolean
         default: false
-        description: Verbose mode. Display column headers.
+        description: Enables verbose mode, which displays column headers.
     cat.count___path.index:
       in: path
       name: index
@@ -21006,7 +21008,8 @@ components:
         Templates with lower 'order' values are merged first. Templates with higher
         'order' values are merged later, overriding templates with lower values.
       schema:
-        type: number
+        type: integer
+        format: int32
       style: form
     indices.recovery___path.index:
       in: path
@@ -22414,12 +22417,19 @@ components:
             - graph_memory_usage_percentage
             - graph_query_errors
             - graph_query_requests
+            - graph_stats
             - hit_count
             - indexing_from_model_degraded
             - indices_in_cache
             - knn_query_requests
+            - knn_query_with_filter_requests
             - load_exception_count
             - load_success_count
+            - lucene_initialized
+            - max_distance_query_requests
+            - max_distance_query_with_filter_requests
+            - min_score_query_requests
+            - min_score_query_with_filter_requests
             - miss_count
             - model_index_status
             - nmslib_initialized
@@ -26772,6 +26782,7 @@ components:
       content:
         application/json:
           schema:
+            title: settings
             $ref: '#/components/schemas/indices._common___IndexSettings'
       required: true
     indices.put_template:
@@ -26898,6 +26909,7 @@ components:
       content:
         application/json:
           schema:
+            title: template
             $ref: '#/components/schemas/indices._common___IndexTemplate'
     indices.split:
       content:
@@ -27020,36 +27032,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              training_index:
-                type: string
-              training_field:
-                type: string
-              dimension:
-                type: integer
-                format: int32
-              max_training_vector_count:
-                type: integer
-                format: int32
-              search_size:
-                type: integer
-                format: int32
-              description:
-                type: string
-              mode:
-                type: string
-              compression_level:
-                type: string
-              method:
-                type: string
-              spaceType:
-                type: string
-            required:
-              - dimension
-              - training_field
-              - training_index
-      required: true
+            $ref: '#/components/schemas/knn._common___TrainedModel'
     mget:
       content:
         application/json:
@@ -27069,12 +27052,61 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ml._common___CreateConnectorRequest'
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              version:
+                type: integer
+              protocol:
+                type: string
+              credential:
+                $ref: '#/components/schemas/ml._common___Credential'
+              parameters:
+                $ref: '#/components/schemas/ml._common___Parameters'
+              client_config:
+                $ref: '#/components/schemas/ml._common___ClientConfig'
+              actions:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ml._common___Action'
+            required:
+              - actions
+              - credential
+              - description
+              - name
+              - parameters
+              - protocol
+              - version
     ml.register_agents:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ml._common___RegisterAgentsRequest'
+            type: object
+            properties:
+              name:
+                type: string
+              type:
+                type: string
+              description:
+                type: string
+              tools:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ml._common___ToolItems'
+              parameters:
+                $ref: '#/components/schemas/ml._common___Parameters'
+              app_type:
+                type: string
+              memory:
+                $ref: '#/components/schemas/ml._common___Memory'
+              llm:
+                $ref: '#/components/schemas/ml._common___LLM'
+            required:
+              - name
+              - type
     ml.register_model:
       content:
         application/json:
@@ -27136,7 +27168,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ml._common___SearchModelsQuery'
+            type: object
+            properties:
+              query:
+                type: object
+                description: The query.
+              size:
+                type: integer
+                description: The number of models to return.
+            required:
+              - query
+              - size
     msearch:
       content:
         application/x-ndjson:
@@ -27332,16 +27374,15 @@ components:
           schema:
             type: object
             properties:
-              file:
-                type: string
+              id:
+                $ref: '#/components/schemas/_common___Id'
               params:
                 description: |-
                   Key-value pairs used to replace Mustache variables in the template.
                   The key is the variable name.
                   The value is the variable value.
                 type: object
-                additionalProperties:
-                  type: object
+                additionalProperties: true
               source:
                 description: |-
                   An inline search template.
@@ -27583,7 +27624,7 @@ components:
                 additionalProperties:
                   type: object
               indices_boost:
-                description: Allows increasing the relevance of specific indices in the search.
+                description: Allows increasing the relevance of specific indexes in the search.
                 type: object
                 additionalProperties:
                   type: number
@@ -28020,17 +28061,12 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              transform:
-                $ref: '#/components/schemas/transforms._common___Transform'
-            required:
-              - transform
+            $ref: '#/components/schemas/transforms._common___TransformRequest'
     transforms.put:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/transforms._common___Transform'
+            $ref: '#/components/schemas/transforms._common___TransformRequest'
     update:
       content:
         application/json:
@@ -29330,16 +29366,18 @@ components:
                 $ref: '#/components/schemas/_common___ShardStatistics'
               backing_indices:
                 description: Total number of backing indexes for the selected data streams.
-                type: number
+                type: integer
+                format: int32
               data_stream_count:
                 description: Total number of selected data streams.
-                type: number
+                type: integer
+                format: int32
               data_streams:
                 description: Contains statistics for the selected data streams.
                 type: array
                 items:
-                  $ref: '#/components/schemas/indices.data_streams_stats___DataStreamsStatsItem'
-              total_store_sizes:
+                  $ref: '#/components/schemas/indices._common___DataStreamStats'
+              total_store_size:
                 $ref: '#/components/schemas/_common___HumanReadableByteCount'
               total_store_size_bytes:
                 description: Total size, in bytes, of all shards for the selected data streams.
@@ -29925,6 +29963,10 @@ components:
             $ref: '#/components/schemas/ism._common___RetryIndexResponse'
       description: ''
     knn.delete_model___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/knn._common___DeletedModel'
       description: ''
     knn.get_model___200:
       content:
@@ -29933,8 +29975,16 @@ components:
             type: object
       description: ''
     knn.search_models___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/_core.search___ResponseBody'
       description: ''
     knn.stats___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/knn._common___Stats'
       description: ''
     knn.train_model___200:
       content:
@@ -29948,6 +29998,10 @@ components:
               - model_id
       description: ''
     knn.warmup___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/_common___ShardsOperationResponseBase'
       description: ''
     list.help___200:
       content:
@@ -30370,7 +30424,7 @@ components:
     observability.get_localstats___200:
       description: Retrieves
       content:
-        application/json:
+        text/plain:
           schema:
             type: string
     observability.get_object___200:
@@ -30639,6 +30693,10 @@ components:
             $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
       description: ''
     rollups.delete___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/_common___WriteResponseBase'
       description: ''
     rollups.explain___200:
       content:
@@ -30652,15 +30710,23 @@ components:
           schema:
             $ref: '#/components/schemas/rollups._common___RollupEntity'
       description: ''
-    rollups.put___200:
+    rollups.put___201:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/rollups._common___RollupEntity'
       description: ''
     rollups.start___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
       description: ''
     rollups.stop___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
       description: ''
     scripts_painless_execute___200:
       content:
@@ -31785,7 +31851,7 @@ components:
               snapshots:
                 type: array
                 items:
-                  $ref: '#/components/schemas/snapshot._common___Status'
+                  $ref: '#/components/schemas/snapshot._common___SnapshotStatus'
             required:
               - snapshots
       description: ''
@@ -31897,6 +31963,10 @@ components:
               - took
       description: ''
     transforms.delete___200:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/transforms._common___DeleteTransformsResponse'
       description: ''
     transforms.explain___200:
       content:
@@ -31908,7 +31978,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/transforms._common___TransformEntity'
+            $ref: '#/components/schemas/transforms._common___TransformResponse'
       description: ''
     transforms.preview___200:
       content:
@@ -31920,7 +31990,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/transforms._common___TransformEntity'
+            $ref: '#/components/schemas/transforms._common___TransformResponse'
+      description: ''
+    transforms.put___201:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/transforms._common___TransformResponse'
       description: ''
     transforms.search___200:
       content:
@@ -32693,17 +32769,27 @@ components:
         - time_in_millis
         - total
     _common___HealthStatus:
-      type: string
-      enum:
-        - green
-        - red
-        - yellow
-    _common___HealthStatusCapitalized:
-      type: string
-      enum:
-        - GREEN
-        - RED
-        - YELLOW
+      oneOf:
+        - description: All shards are assigned.
+          type: string
+          enum:
+            - green
+            - GREEN
+        - description: |
+            All primary shards are assigned, but one or more replica shards are
+            unassigned. If a node in the cluster fails, some data could be unavailable
+            until that node is repaired.
+          type: string
+          enum:
+            - yellow
+            - YELLOW
+        - description: |
+            One or more primary shards are unassigned, so some data is unavailable. This
+            can occur briefly during cluster startup as primary shards are assigned.
+          type: string
+          enum:
+            - red
+            - RED
     _common___Host:
       type: string
     _common___HourAndMinute:
@@ -49491,7 +49577,8 @@ components:
           type: boolean
         generation:
           description: Current generation for the data stream. This number acts as a cumulative count of the stream's rollovers, starting at 1.
-          type: number
+          type: integer
+          format: int64
         hidden:
           description: If `true`, the data stream is hidden.
           type: boolean
@@ -49515,7 +49602,7 @@ components:
           description: If `true`, the data stream is created and managed by cross-cluster replication and the local cluster can not write into this data stream or change its mappings.
           type: boolean
         status:
-          $ref: '#/components/schemas/_common___HealthStatusCapitalized'
+          $ref: '#/components/schemas/_common___HealthStatus'
         system:
           description: If `true`, the data stream is created and managed by an OpenSearch stack component and cannot be modified through normal user interaction.
           type: boolean
@@ -49547,6 +49634,27 @@ components:
       required:
         - index_name
         - index_uuid
+    indices._common___DataStreamStats:
+      type: object
+      properties:
+        backing_indices:
+          description: Current number of backing indexes for the data stream.
+          type: integer
+          format: int32
+        data_stream:
+          $ref: '#/components/schemas/_common___Name'
+        maximum_timestamp:
+          $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
+        store_size:
+          $ref: '#/components/schemas/_common___HumanReadableByteCount'
+        store_size_bytes:
+          description: Total size, in bytes, of all shards for the data stream's backing indexes.
+          $ref: '#/components/schemas/_common___ByteCount'
+      required:
+        - backing_indices
+        - data_stream
+        - maximum_timestamp
+        - store_size_bytes
     indices._common___DataStreamTimestampField:
       type: object
       properties:
@@ -50810,26 +50918,6 @@ components:
             $ref: '#/components/schemas/_common___ShardFailure'
       required:
         - failures
-    indices.data_streams_stats___DataStreamsStatsItem:
-      type: object
-      properties:
-        backing_indices:
-          description: Current number of backing indexes for the data stream.
-          type: number
-        data_stream:
-          $ref: '#/components/schemas/_common___Name'
-        maximum_timestamp:
-          $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
-        store_size:
-          $ref: '#/components/schemas/_common___HumanReadableByteCount'
-        store_size_bytes:
-          description: Total size, in bytes, of all shards for the data stream's backing indexes.
-          $ref: '#/components/schemas/_common___ByteCount'
-      required:
-        - backing_indices
-        - data_stream
-        - maximum_timestamp
-        - store_size_bytes
     indices.get_alias___IndexAliases:
       type: object
       properties:
@@ -51288,6 +51376,8 @@ components:
           $ref: '#/components/schemas/_common___Id'
         store_exception:
           $ref: '#/components/schemas/indices.shard_stores___ShardStoreException'
+      additionalProperties:
+        $ref: '#/components/schemas/_common___NodeAttributes'
       required:
         - allocation
     indices.shard_stores___ShardStoreAllocation:
@@ -53244,12 +53334,143 @@ components:
       enum:
         - AND
         - OR
+    knn._common___DeletedModel:
+      type: object
+      properties:
+        model_id:
+          type: string
+        result:
+          type: string
+          enum:
+            - deleted
+            - error
+      required:
+        - model_id
+        - result
+    knn._common___GraphMergeStats:
+      type: object
+      properties:
+        current:
+          type: number
+        total:
+          type: number
+        total_time_in_millis:
+          $ref: '#/components/schemas/_common___DurationValueUnitMillis'
+        current_docs:
+          type: number
+        total_docs:
+          type: number
+        total_size_in_bytes:
+          $ref: '#/components/schemas/_common___ByteCount'
+        current_size_in_bytes:
+          $ref: '#/components/schemas/_common___ByteCount'
+    knn._common___GraphRefreshStats:
+      type: object
+      properties:
+        total:
+          type: number
+        total_time_in_millis:
+          $ref: '#/components/schemas/_common___DurationValueUnitMillis'
+    knn._common___GraphStats:
+      type: object
+      properties:
+        merge:
+          $ref: '#/components/schemas/knn._common___GraphMergeStats'
+        refresh:
+          $ref: '#/components/schemas/knn._common___GraphRefreshStats'
+    knn._common___NodeStats:
+      type: object
+      properties:
+        max_distance_query_with_filter_requests:
+          type: number
+        graph_memory_usage_percentage:
+          $ref: '#/components/schemas/_common___PercentageNumber'
+        graph_query_requests:
+          type: number
+        graph_memory_usage:
+          type: number
+        cache_capacity_reached:
+          type: boolean
+        load_success_count:
+          type: number
+        training_memory_usage:
+          type: number
+        indices_in_cache:
+          type: object
+          additionalProperties: true
+        script_query_errors:
+          type: number
+        hit_count:
+          type: number
+        knn_query_requests:
+          type: number
+        total_load_time:
+          type: number
+        miss_count:
+          type: number
+        min_score_query_requests:
+          type: number
+        knn_query_with_filter_requests:
+          type: number
+        training_memory_usage_percentage:
+          $ref: '#/components/schemas/_common___PercentageNumber'
+        max_distance_query_requests:
+          type: number
+        lucene_initialized:
+          type: boolean
+        graph_index_requests:
+          type: number
+        faiss_initialized:
+          type: boolean
+        load_exception_count:
+          type: number
+        training_errors:
+          type: number
+        min_score_query_with_filter_requests:
+          type: number
+        eviction_count:
+          type: number
+        nmslib_initialized:
+          type: boolean
+        script_compilations:
+          type: number
+        script_query_requests:
+          type: number
+        graph_stats:
+          $ref: '#/components/schemas/knn._common___GraphStats'
+        graph_query_errors:
+          type: number
+        indexing_from_model_degraded:
+          type: boolean
+        graph_index_errors:
+          type: number
+        training_requests:
+          type: number
+        script_compilation_errors:
+          type: number
     knn._common___SearchType:
       type: string
       description: Search operation type.
       enum:
         - dfs_query_then_fetch
         - query_then_fetch
+    knn._common___Stats:
+      type: object
+      properties:
+        _nodes:
+          $ref: '#/components/schemas/_common___NodeStatistics'
+        cluster_name:
+          $ref: '#/components/schemas/_common___Name'
+        circuit_breaker_triggered:
+          type: boolean
+        model_index_status:
+          oneOf:
+            - $ref: '#/components/schemas/_common___HealthStatus'
+            - type: 'null'
+        nodes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/knn._common___NodeStats'
     knn._common___SuggestMode:
       type: string
       description: Specify suggest mode.
@@ -53257,6 +53478,36 @@ components:
         - always
         - missing
         - popular
+    knn._common___TrainedModel:
+      type: object
+      properties:
+        training_index:
+          type: string
+        training_field:
+          type: string
+        dimension:
+          type: integer
+          format: int32
+        max_training_vector_count:
+          type: integer
+          format: int32
+        search_size:
+          type: integer
+          format: int32
+        description:
+          type: string
+        mode:
+          type: string
+        compression_level:
+          type: string
+        method:
+          type: string
+        spaceType:
+          type: string
+      required:
+        - dimension
+        - training_field
+        - training_index
     ml._common___Action:
       type: object
       properties:
@@ -53291,35 +53542,6 @@ components:
           type: integer
         retry_timeout_seconds:
           type: integer
-    ml._common___CreateConnectorRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        version:
-          type: integer
-        protocol:
-          type: string
-        credential:
-          $ref: '#/components/schemas/ml._common___Credential'
-        parameters:
-          $ref: '#/components/schemas/ml._common___Parameters'
-        client_config:
-          $ref: '#/components/schemas/ml._common___ClientConfig'
-        actions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ml._common___Action'
-      required:
-        - actions
-        - credential
-        - description
-        - name
-        - parameters
-        - protocol
-        - version
     ml._common___Credential:
       type: object
       properties:
@@ -53418,30 +53640,6 @@ components:
     ml._common___Parameters:
       type: object
       additionalProperties: true
-    ml._common___RegisterAgentsRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-        description:
-          type: string
-        tools:
-          type: array
-          items:
-            $ref: '#/components/schemas/ml._common___ToolItems'
-        parameters:
-          $ref: '#/components/schemas/ml._common___Parameters'
-        app_type:
-          type: string
-        memory:
-          $ref: '#/components/schemas/ml._common___Memory'
-        llm:
-          $ref: '#/components/schemas/ml._common___LLM'
-      required:
-        - name
-        - type
     ml._common___SearchModelsHits:
       type: object
       properties:
@@ -53482,18 +53680,6 @@ components:
           $ref: '#/components/schemas/_common___Name'
       required:
         - _score
-    ml._common___SearchModelsQuery:
-      type: object
-      properties:
-        query:
-          type: object
-          description: The query.
-        size:
-          type: integer
-          description: The number of models to return.
-      required:
-        - query
-        - size
     ml._common___SearchModelsResponse:
       type: object
       properties:
@@ -56124,7 +56310,6 @@ components:
           $ref: '#/components/schemas/observability._common___SavedQuery'
       required:
         - objectId
-        - tenant
     observability._common___ObservabilityObjectList:
       type: object
       properties:
@@ -56672,19 +56857,6 @@ components:
           type: string
         follower_cluster_role:
           type: string
-    rollups._common___Continuous:
-      type: object
-      properties:
-        next_window_start_time:
-          type: number
-        next_window_end_time:
-          type: number
-        status:
-          type: string
-        failure_reason:
-          type: string
-        stats:
-          $ref: '#/components/schemas/rollups._common___Stats'
     rollups._common___Cron:
       type: object
       properties:
@@ -56705,6 +56877,10 @@ components:
           type: string
         target_field:
           type: string
+        format:
+          type:
+            - 'null'
+            - string
     rollups._common___DimensionsConfigItem:
       type: object
       properties:
@@ -56719,17 +56895,18 @@ components:
     rollups._common___Explain:
       type: object
       properties:
-        rollup_id:
-          type: string
-        last_updated_time:
-          type: number
-        continuous:
-          $ref: '#/components/schemas/rollups._common___Continuous'
+        metadata_id:
+          type:
+            - 'null'
+            - string
+        rollup_metadata:
+          type:
+            - 'null'
+            - object
     rollups._common___ExplainEntities:
       type: object
-      properties:
-        item:
-          $ref: '#/components/schemas/rollups._common___Explain'
+      additionalProperties:
+        $ref: '#/components/schemas/rollups._common___Explain'
     rollups._common___HistogramDimension:
       type: object
       properties:
@@ -56804,7 +56981,9 @@ components:
         target_index:
           type: string
         metadata_id:
-          type: string
+          type:
+            - 'null'
+            - string
         page_size:
           type: number
         delay:
@@ -56826,11 +57005,14 @@ components:
       type: object
       properties:
         _id:
-          type: string
-        _seqNo:
-          type: number
-        _primaryTerm:
-          type: number
+          $ref: '#/components/schemas/_common___Id'
+        _seq_no:
+          $ref: '#/components/schemas/_common___SequenceNumber'
+        _primary_term:
+          type: integer
+          format: int64
+        _version:
+          $ref: '#/components/schemas/_common___VersionNumber'
         rollup:
           $ref: '#/components/schemas/rollups._common___Rollup'
     rollups._common___Schedule:
@@ -56838,19 +57020,6 @@ components:
       properties:
         interval:
           $ref: '#/components/schemas/rollups._common___Interval'
-    rollups._common___Stats:
-      type: object
-      properties:
-        pages_processed:
-          type: number
-        documents_processed:
-          type: number
-        rollups_indexed:
-          type: number
-        index_time_in_ms:
-          type: number
-        search_time_in_ms:
-          type: number
     rollups._common___TermsDimension:
       type: object
       properties:
@@ -58426,7 +58595,8 @@ components:
       type: object
       properties:
         file_count:
-          type: number
+          type: integer
+          format: int32
         size_in_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
       required:
@@ -58450,79 +58620,15 @@ components:
         chunk_size:
           type: string
         compress:
-          oneOf:
-            - type: string
-            - type: boolean
+          $ref: '#/components/schemas/_common___StringifiedBoolean'
         concurrent_streams:
-          oneOf:
-            - type: string
-            - type: number
+          $ref: '#/components/schemas/_common___StringifiedInteger'
         location:
           type: string
         read_only:
-          oneOf:
-            - type: string
-            - type: boolean
+          $ref: '#/components/schemas/_common___StringifiedBoolean'
       required:
         - location
-    snapshot._common___ShardsStats:
-      type: object
-      properties:
-        done:
-          type: number
-        failed:
-          type: number
-        finalizing:
-          type: number
-        initializing:
-          type: number
-        started:
-          type: number
-        total:
-          type: number
-      required:
-        - done
-        - failed
-        - finalizing
-        - initializing
-        - started
-        - total
-    snapshot._common___ShardsStatsStage:
-      type: string
-      enum:
-        - DONE
-        - FAILURE
-        - FINALIZE
-        - INIT
-        - STARTED
-    snapshot._common___ShardsStatsSummary:
-      type: object
-      properties:
-        incremental:
-          $ref: '#/components/schemas/snapshot._common___ShardsStatsSummaryItem'
-        total:
-          $ref: '#/components/schemas/snapshot._common___ShardsStatsSummaryItem'
-        start_time_in_millis:
-          $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
-        time:
-          $ref: '#/components/schemas/_common___Duration'
-        time_in_millis:
-          $ref: '#/components/schemas/_common___DurationValueUnitMillis'
-      required:
-        - incremental
-        - start_time_in_millis
-        - time_in_millis
-        - total
-    snapshot._common___ShardsStatsSummaryItem:
-      type: object
-      properties:
-        file_count:
-          type: number
-        size_in_bytes:
-          $ref: '#/components/schemas/_common___ByteCount'
-      required:
-        - file_count
-        - size_in_bytes
     snapshot._common___SnapshotIndexStats:
       type: object
       properties:
@@ -58531,7 +58637,7 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/snapshot._common___SnapshotShardsStatus'
         shards_stats:
-          $ref: '#/components/schemas/snapshot._common___ShardsStats'
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStats'
         stats:
           $ref: '#/components/schemas/snapshot._common___SnapshotStats'
       required:
@@ -58609,13 +58715,93 @@ components:
         - reason
         - shard_id
         - status
+    snapshot._common___SnapshotShardsStats:
+      type: object
+      properties:
+        done:
+          type: integer
+          format: int64
+        failed:
+          type: integer
+          format: int64
+        finalizing:
+          type: integer
+          format: int64
+        initializing:
+          type: integer
+          format: int64
+        started:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      required:
+        - done
+        - failed
+        - finalizing
+        - initializing
+        - started
+        - total
+    snapshot._common___SnapshotShardsStatsStage:
+      oneOf:
+        - type: string
+          const: DONE
+          description: Number of shards in the snapshot that were successfully stored in the repository.
+        - type: string
+          const: FAILURE
+          description: Number of shards in the snapshot that were not successfully stored in the repository.
+        - type: string
+          const: FINALIZE
+          description: Number of shards in the snapshot that are in the finalizing stage of being stored in the repository.
+        - type: string
+          const: INIT
+          description: Number of shards in the snapshot that are in the initializing stage of being stored in the repository.
+        - type: string
+          const: STARTED
+          description: Number of shards in the snapshot that are in the started stage of being stored in the repository.
+    snapshot._common___SnapshotShardsStatsSummary:
+      type: object
+      properties:
+        incremental:
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStatsSummaryItem'
+        processed:
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStatsSummaryItem'
+        total:
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStatsSummaryItem'
+        start_time_in_millis:
+          $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
+        time:
+          $ref: '#/components/schemas/_common___Duration'
+        time_in_millis:
+          $ref: '#/components/schemas/_common___DurationValueUnitMillis'
+      required:
+        - incremental
+        - start_time_in_millis
+        - time_in_millis
+        - total
+    snapshot._common___SnapshotShardsStatsSummaryItem:
+      type: object
+      properties:
+        file_count:
+          type: integer
+          format: int64
+        size_in_bytes:
+          $ref: '#/components/schemas/_common___ByteCount'
+      required:
+        - file_count
+        - size_in_bytes
     snapshot._common___SnapshotShardsStatus:
       type: object
       properties:
+        node:
+          $ref: '#/components/schemas/_common___NodeId'
+        reason:
+          type: string
         stage:
-          $ref: '#/components/schemas/snapshot._common___ShardsStatsStage'
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStatsStage'
         stats:
-          $ref: '#/components/schemas/snapshot._common___ShardsStatsSummary'
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStatsSummary'
       required:
         - stage
         - stats
@@ -58623,6 +58809,8 @@ components:
       type: object
       properties:
         incremental:
+          $ref: '#/components/schemas/snapshot._common___FileCountSnapshotStats'
+        processed:
           $ref: '#/components/schemas/snapshot._common___FileCountSnapshotStats'
         start_time_in_millis:
           $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
@@ -58637,7 +58825,7 @@ components:
         - start_time_in_millis
         - time_in_millis
         - total
-    snapshot._common___Status:
+    snapshot._common___SnapshotStatus:
       type: object
       properties:
         include_global_state:
@@ -58649,7 +58837,7 @@ components:
         repository:
           type: string
         shards_stats:
-          $ref: '#/components/schemas/snapshot._common___ShardsStats'
+          $ref: '#/components/schemas/snapshot._common___SnapshotShardsStats'
         snapshot:
           type: string
         state:
@@ -58659,7 +58847,6 @@ components:
         uuid:
           $ref: '#/components/schemas/_common___Uuid'
       required:
-        - include_global_state
         - indices
         - repository
         - shards_stats
@@ -59017,13 +59204,68 @@ components:
           type: string
         target_field:
           type: string
+    transforms._common___DeletedTransformResponse:
+      type: object
+      properties:
+        _type:
+          $ref: '#/components/schemas/_common___Type'
+        _index:
+          type: string
+        _id:
+          $ref: '#/components/schemas/_common___Id'
+        _version:
+          $ref: '#/components/schemas/_common___VersionNumber'
+        result:
+          type: string
+        forced_refresh:
+          type: boolean
+        _shards:
+          $ref: '#/components/schemas/_common___ShardStatistics'
+        _primary_term:
+          type: integer
+          format: int64
+        _seq_no:
+          $ref: '#/components/schemas/_common___SequenceNumber'
+        status:
+          type: number
+      required:
+        - _id
+        - _index
+        - _primary_term
+        - _seq_no
+        - _shards
+        - _version
+        - forced_refresh
+        - result
+        - status
+    transforms._common___DeleteTransformResponseItem:
+      type: object
+      properties:
+        delete:
+          $ref: '#/components/schemas/transforms._common___DeletedTransformResponse'
+    transforms._common___DeleteTransformsResponse:
+      type: object
+      properties:
+        took:
+          type: integer
+          format: int64
+        errors:
+          type: boolean
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/transforms._common___DeleteTransformResponseItem'
     transforms._common___Explain:
       type: object
       properties:
         metadata_id:
-          type: string
+          type:
+            - 'null'
+            - string
         transform_metadata:
-          $ref: '#/components/schemas/transforms._common___TransformMetadata'
+          oneOf:
+            - $ref: '#/components/schemas/transforms._common___TransformMetadata'
+            - type: 'null'
     transforms._common___ExplainResponse:
       type: object
       additionalProperties:
@@ -59061,32 +59303,6 @@ components:
           type: string
         interval:
           type: string
-    transforms._common___MetricsConfigItem:
-      type: object
-      properties:
-        source_field:
-          type: string
-        target_field:
-          type: string
-        metrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/transforms._common___MetricsConfigMetrics'
-    transforms._common___MetricsConfigMetrics:
-      type: object
-      properties:
-        avg:
-          type: object
-        sum:
-          type: object
-        max:
-          type: object
-        min:
-          type: object
-        value_count:
-          type: object
-      minProperties: 1
-      maxProperties: 1
     transforms._common___Preview:
       type: object
       properties:
@@ -59129,13 +59345,17 @@ components:
         schedule:
           $ref: '#/components/schemas/transforms._common___Schedule'
         metadata_id:
-          type: string
+          type:
+            - 'null'
+            - string
         updated_at:
-          type: string
+          type: number
         enabled:
           type: boolean
         enabled_at:
-          type: number
+          type:
+            - 'null'
+            - number
         description:
           type: string
         source_index:
@@ -59155,20 +59375,9 @@ components:
           items:
             $ref: '#/components/schemas/transforms._common___GroupsConfigItem'
         aggregations:
-          type: array
-          items:
-            $ref: '#/components/schemas/transforms._common___MetricsConfigItem'
-    transforms._common___TransformEntity:
-      type: object
-      properties:
-        _id:
-          type: string
-        _seqNo:
-          type: number
-        _primaryTerm:
-          type: number
-        transform:
-          $ref: '#/components/schemas/transforms._common___Transform'
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/transforms._common___GroupsConfigItem'
     transforms._common___TransformMetadata:
       type: object
       properties:
@@ -59184,6 +59393,27 @@ components:
           type: string
         stats:
           $ref: '#/components/schemas/transforms._common___ExplainStats'
+    transforms._common___TransformRequest:
+      type: object
+      properties:
+        transform:
+          $ref: '#/components/schemas/transforms._common___Transform'
+      required:
+        - transform
+    transforms._common___TransformResponse:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/_common___Id'
+        _primary_term:
+          type: integer
+          format: int64
+        _seq_no:
+          $ref: '#/components/schemas/_common___SequenceNumber'
+        _version:
+          $ref: '#/components/schemas/_common___VersionNumber'
+        transform:
+          $ref: '#/components/schemas/transforms._common___Transform'
     transforms._common___TransformsResponse:
       type: object
       properties:
@@ -59192,7 +59422,7 @@ components:
         transforms:
           type: array
           items:
-            $ref: '#/components/schemas/transforms._common___TransformEntity'
+            $ref: '#/components/schemas/transforms._common___TransformResponse'
     wlm._common___QueryGroupCreate:
       type: object
       properties:
