@@ -6521,6 +6521,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/security.update_distinguished_name___200'
+        '201':
+          $ref: '#/components/responses/security.update_distinguished_name___201'
         '400':
           $ref: '#/components/responses/security.update_distinguished_name___400'
         '403':
@@ -8009,7 +8011,7 @@ paths:
       operationId: reindex_rethrottle.0
       x-operation-group: reindex_rethrottle
       x-version-added: '1.0'
-      description: Changes the number of requests per second for a particular Reindex operation.
+      description: Changes the number of requests per second for a particular reindex operation.
       externalDocs:
         url: https://opensearch.org/docs/latest
       parameters:
@@ -14044,6 +14046,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/security.update_distinguished_name___200'
+        '201':
+          $ref: '#/components/responses/security.update_distinguished_name___201'
         '400':
           $ref: '#/components/responses/security.update_distinguished_name___400'
         '403':
@@ -27462,9 +27466,6 @@ components:
                 $ref: '#/components/schemas/_common___Duration'
               scroll_id:
                 $ref: '#/components/schemas/_common___ScrollId'
-            required:
-              - scroll_id
-            description: The scroll ID if not passed by URL or query parameter.
     search:
       content:
         application/json:
@@ -27791,7 +27792,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/security._common___PatchOperation'
+            $ref: '#/components/schemas/security._common___PatchOperations'
     security.patch_distinguished_names:
       content:
         application/json:
@@ -31212,7 +31213,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/security._common___DistinguishedNames'
+            $ref: '#/components/schemas/security._common___DistinguishedNamesMap'
     security.get_distinguished_name___400:
       content:
         application/json:
@@ -31636,6 +31637,12 @@ components:
           schema:
             $ref: '#/components/schemas/security._common___Ok'
       description: ''
+    security.update_distinguished_name___201:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/security._common___Ok'
+      description: ''
     security.update_distinguished_name___400:
       content:
         application/json:
@@ -31955,8 +31962,9 @@ components:
                 format: int64
               _version:
                 $ref: '#/components/schemas/_common___VersionNumber'
+              _type:
+                $ref: '#/components/schemas/_common___Type'
             required:
-              - _id
               - _index
               - _version
               - found
@@ -43617,7 +43625,9 @@ components:
             The value is the variable value.
           type: object
           additionalProperties:
-            type: object
+            oneOf:
+              - type: string
+              - type: object
         profile:
           description: When `true`, provides a profile for the query execution.
           type: boolean
@@ -43861,6 +43871,8 @@ components:
             $ref: '#/components/schemas/_core.termvectors___TermVector'
         error:
           $ref: '#/components/schemas/_common___ErrorCause'
+        _type:
+          $ref: '#/components/schemas/_common___Type'
       required:
         - _id
         - _index
@@ -44102,12 +44114,16 @@ components:
           type: string
         cancellable:
           type: boolean
+        cancelled:
+          type: boolean
         description:
           type: string
         id:
           type: number
         node:
           $ref: '#/components/schemas/_common___Name'
+        resource_stats:
+          $ref: '#/components/schemas/_common___ResourceStats'
         running_time_in_nanos:
           $ref: '#/components/schemas/_common___DurationValueUnitNanos'
         start_time_in_millis:
@@ -57986,6 +58002,10 @@ components:
       required:
         - op
         - path
+    security._common___PatchOperations:
+      type: array
+      items:
+        $ref: '#/components/schemas/security._common___PatchOperation'
     security._common___PermissionsInfo:
       type: object
       properties:
