@@ -164,16 +164,16 @@ jobs:
         shell: bash -eo pipefail {0}
         run: |
           jq -sc '
-            (map(.operations) | add | unique | length) as $total_operations_count |
-            (map(.evaluated_operations) | add | unique | length) as $evaluated_operations_count |
+            (map(.operations) | add | map({path: .path, method: .method}) | unique) as $all_operations |
+            (map(.evaluated_operations) | add | map({path: .path, method: .method}) | unique) as $evaluated_operations |
             {
-              total_operations_count: $total_operations_count,
-              evaluated_operations_count: $evaluated_operations_count,
+              total_operations_count: ($all_operations | length),
+              evaluated_operations_count: ($evaluated_operations | length),
               evaluated_paths_pct: (
                 $evaluated_operations_count | (10000 * . / $total_operations_count | round / 100)
               ),
-              operations_list: (map(.operations) | add | unique),
-              evaluated_operations_list: (map(.evaluated_operations) | add | unique)
+              operations_list: $all_operations,
+              evaluated_operations_list: $evaluated_operations
             }
           ' $(find ./coverage -name "test-spec-coverage-*.json") > ./coverage/coverage.json
           cat ./coverage/coverage.json
