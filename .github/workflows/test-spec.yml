@@ -166,15 +166,17 @@ jobs:
           jq -sc '
             (map(.operations) | add | map({path: .path, method: .method}) | unique) as $all_operations |
             (map(.evaluated_operations) | add | map({path: .path, method: .method}) | unique) as $evaluated_operations |
-            total_operations_count: ($all_operations | length),
-            evaluated_operations_count: ($evaluated_operations | length),
-            evaluated_paths_pct: (
-              if ($all_operations | length) == 0 then 0
-              else ($evaluated_operations | length * 100) / ($all_operations | length)
-              end
-            ),
-            operations_list: $all_operations,
-            evaluated_operations_list: $evaluated_operations
+            {
+              total_operations_count: ($all_operations | length),
+              evaluated_operations_count: ($evaluated_operations | length),
+              evaluated_paths_pct: (
+                if ($all_operations | length) == 0 then 0
+                else ($evaluated_operations | length * 100) / ($all_operations | length)
+                end
+              ),
+              operations_list: $all_operations,
+              evaluated_operations_list: $evaluated_operations
+            }
           ' $(find ./coverage -name "test-spec-coverage-*.json") > ./coverage/coverage.json
           cat ./coverage/coverage.json
 
