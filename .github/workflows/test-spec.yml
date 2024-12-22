@@ -170,7 +170,9 @@ jobs:
               total_operations_count: ($all_operations | length),
               evaluated_operations_count: ($evaluated_operations | length),
               evaluated_paths_pct: (
-                $evaluated_operations_count | (10000 * . / $total_operations_count | round / 100)
+                if $total_operations_count == 0 then 0
+                else ($evaluated_operations | length * 100) / $total_operations_count
+                end
               ),
               operations_list: $all_operations,
               evaluated_operations_list: $evaluated_operations
