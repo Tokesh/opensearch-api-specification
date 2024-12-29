@@ -134,7 +134,10 @@ jobs:
 
       - name: Collect Test File Names
         run: |
-          find tests/. -name "*.yaml" | xargs realpath | jq -Rn '{ files: [inputs | "\(.)"] }' > test-files.json
+          files=$(find tests/. -name "*.yaml" | xargs realpath)
+          echo "Found the following test files:"
+          echo "$files"
+          echo "$files" | jq -Rn '{ files: [inputs | "\(.)"] }' > test-files.json
 
       - name: Display Unused Test Files
         run: |
