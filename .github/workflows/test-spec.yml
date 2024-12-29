@@ -29,7 +29,7 @@ jobs:
           - version: 2.0.0
             admin_password: admin
           - version: 2.18.0
-            ref: 'sha256:5864bcbb2098fe92b014065619e99b1ec36310d63eb4889865998ae8b3f8e565'
+            ref: '@sha256:5864bcbb2098fe92b014065619e99b1ec36310d63eb4889865998ae8b3f8e565'
           - version: 2.18.0
             tests: plugins/index_state_management
           - version: 2.18.0
