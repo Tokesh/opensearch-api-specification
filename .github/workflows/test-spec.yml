@@ -162,6 +162,16 @@ jobs:
             ' $(find ./ -name "test-spec-coverage-*.json") > ./coverage/missing_paths.txt
           cat ./coverage/missing_paths.txt
           echo "Finished displaying missing paths"
+      - name: Output Full Operations List
+        run: |
+          echo "Outputting full operations list for debugging..."
+          jq -r -sc '
+              (map(.operations) | add) as $all_operations |
+              $all_operations |
+              map("\(.method) \(.path)") |
+              .[]
+            ' $(find ./ -name "test-spec-coverage-*.json") > ./coverage/all_operations.txt
+          cat ./coverage/all_operations.txt
 
       - name: Verify Uniqueness of Paths and Methods
         run: |
