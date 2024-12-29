@@ -1949,6 +1949,7 @@ paths:
         url: https://opensearch.org/docs/latest
       parameters:
         - $ref: '#/components/parameters/cluster.get_component_template___query.cluster_manager_timeout'
+        - $ref: '#/components/parameters/cluster.get_component_template___query.flat_settings'
         - $ref: '#/components/parameters/cluster.get_component_template___query.local'
         - $ref: '#/components/parameters/cluster.get_component_template___query.master_timeout'
         - $ref: '#/components/parameters/_global___query.pretty'
@@ -1990,6 +1991,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/cluster.get_component_template___path.name'
         - $ref: '#/components/parameters/cluster.get_component_template___query.cluster_manager_timeout'
+        - $ref: '#/components/parameters/cluster.get_component_template___query.flat_settings'
         - $ref: '#/components/parameters/cluster.get_component_template___query.local'
         - $ref: '#/components/parameters/cluster.get_component_template___query.master_timeout'
         - $ref: '#/components/parameters/_global___query.pretty'
@@ -9677,8 +9679,6 @@ paths:
         - $ref: '#/components/parameters/_global___query.error_trace'
         - $ref: '#/components/parameters/_global___query.source'
         - $ref: '#/components/parameters/_global___query.filter_path'
-      requestBody:
-        $ref: '#/components/requestBodies/indices.upgrade'
       responses:
         '200':
           $ref: '#/components/responses/indices.upgrade___200'
@@ -12417,8 +12417,6 @@ paths:
         - $ref: '#/components/parameters/_global___query.error_trace'
         - $ref: '#/components/parameters/_global___query.source'
         - $ref: '#/components/parameters/_global___query.filter_path'
-      requestBody:
-        $ref: '#/components/requestBodies/indices.upgrade'
       responses:
         '200':
           $ref: '#/components/responses/indices.upgrade___200'
@@ -17178,6 +17176,14 @@ components:
       schema:
         $ref: '#/components/schemas/_common___Duration'
       x-version-added: '2.0'
+    cluster.get_component_template___query.flat_settings:
+      in: query
+      name: flat_settings
+      description: If `true`, returns settings in flat format.
+      schema:
+        type: boolean
+        default: false
+      style: form
     cluster.get_component_template___query.local:
       in: query
       name: local
@@ -20111,7 +20117,8 @@ components:
         Set this parameter to 1 to merge all segments into one segment.
         The default behavior is to perform the merge as necessary.
       schema:
-        type: number
+        type: integer
+        format: int64
       style: form
     indices.forcemerge___query.only_expunge_deletes:
       in: query
@@ -21255,10 +21262,10 @@ components:
       description: List of shard health statuses used to limit the request.
       schema:
         oneOf:
-          - $ref: '#/components/schemas/indices.shard_stores___Status'
+          - $ref: '#/components/schemas/indices.shard_stores___ShardStoreStatus'
           - type: array
             items:
-              $ref: '#/components/schemas/indices.shard_stores___Status'
+              $ref: '#/components/schemas/indices.shard_stores___ShardStoreStatus'
       style: form
     indices.shrink___path.index:
       in: path
@@ -26431,7 +26438,8 @@ components:
                 type: boolean
               shard:
                 description: Specifies the ID of the shard that you would like an explanation for.
-                type: number
+                type: integer
+                format: int32
             description: The index, shard, and primary flag to explain. Empty means 'explain the first unassigned shard'
     cluster.delete_weighted_routing:
       content:
@@ -26645,8 +26653,7 @@ components:
               settings:
                 description: Configuration options for the target index.
                 type: object
-                additionalProperties:
-                  type: object
+                additionalProperties: true
             description: The configuration for the target index (`settings` and `aliases`)
     indices.create:
       content:
@@ -26854,8 +26861,7 @@ components:
                   Configuration options for the index.
                   Data streams do not support this parameter.
                 type: object
-                additionalProperties:
-                  type: object
+                additionalProperties: true
             description: The conditions that needs to be met for executing rollover
     indices.shrink:
       content:
@@ -26873,8 +26879,7 @@ components:
               settings:
                 description: Configuration options for the target index.
                 type: object
-                additionalProperties:
-                  type: object
+                additionalProperties: true
             description: The configuration for the target index (`settings` and `aliases`)
     indices.simulate_index_template:
       content:
@@ -26948,11 +26953,6 @@ components:
                   $ref: '#/components/schemas/indices.update_aliases___Action'
             description: The definition of `actions` to perform
       required: true
-    indices.upgrade:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/indices._common___UpgradeRequest'
     indices.validate_query:
       content:
         application/json:
@@ -28592,7 +28592,8 @@ components:
               remaining_delay_in_millis:
                 $ref: '#/components/schemas/_common___DurationValueUnitMillis'
               shard:
-                type: number
+                type: integer
+                format: int32
               unassigned_info:
                 $ref: '#/components/schemas/cluster.allocation_explain___UnassignedInformation'
               note:
@@ -28745,34 +28746,56 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              explanations:
-                type: array
-                items:
-                  $ref: '#/components/schemas/cluster.reroute___RerouteExplanation'
-              state:
-                description: |-
-                  There aren't any guarantees on the output/structure of the raw cluster state.
-                  Here you will find the internal representation of the cluster, which can
-                  differ from the external representation.
-                type: object
-            required:
-              - acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  explanations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/cluster.reroute___RerouteExplanation'
+                  state:
+                    description: |-
+                      There aren't any guarantees on the output/structure of the raw cluster state.
+                      Here you will find the internal representation of the cluster, which can
+                      differ from the external representation.
       description: ''
     cluster.state___200:
       content:
         application/json:
-          schema:
-            type: object
+          schema: {}
       description: ''
     cluster.stats___200:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/cluster.stats___StatsResponseBase'
+            allOf:
+              - $ref: '#/components/schemas/nodes._common___NodesResponseBase'
+              - type: object
+                properties:
+                  cluster_name:
+                    description: Name of the cluster, based on the Cluster name setting setting.
+                    $ref: '#/components/schemas/_common___Name'
+                  cluster_uuid:
+                    description: Unique identifier for the cluster.
+                    $ref: '#/components/schemas/_common___Uuid'
+                  indices:
+                    description: Contains statistics about indexes with shards assigned to selected nodes.
+                    $ref: '#/components/schemas/cluster.stats___ClusterIndices'
+                  nodes:
+                    description: Contains statistics about nodes selected by the request's node filters.
+                    $ref: '#/components/schemas/cluster.stats___ClusterNodes'
+                  status:
+                    description: Health status of the cluster, based on the state of its primary and replica shards.
+                    $ref: '#/components/schemas/_common___HealthStatus'
+                  timestamp:
+                    description: Unix timestamp, in milliseconds, for the last time the cluster statistics were refreshed.
+                    $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
+                required:
+                  - cluster_name
+                  - cluster_uuid
+                  - status
+                  - timestamp
       description: ''
     count___200:
       content:
@@ -29283,20 +29306,19 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              shards_acknowledged:
-                type: boolean
-              indices:
-                type: array
-                items:
-                  $ref: '#/components/schemas/indices.add_block___IndicesBlockStatus'
-            required:
-              - acknowledged
-              - indices
-              - shards_acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  shards_acknowledged:
+                    type: boolean
+                  indices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/indices.add_block___IndicesBlockStatus'
+                required:
+                  - indices
+                  - shards_acknowledged
       description: ''
     indices.analyze___200:
       content:
@@ -29321,37 +29343,35 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              index:
-                $ref: '#/components/schemas/_common___IndexName'
-              shards_acknowledged:
-                type: boolean
-            required:
-              - acknowledged
-              - index
-              - shards_acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  shards_acknowledged:
+                    type: boolean
+                  index:
+                    $ref: '#/components/schemas/_common___IndexName'
+                required:
+                  - index
+                  - shards_acknowledged
       description: ''
     indices.close___200:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              indices:
-                type: object
-                additionalProperties:
-                  $ref: '#/components/schemas/indices.close___CloseIndexResult'
-              shards_acknowledged:
-                type: boolean
-            required:
-              - acknowledged
-              - indices
-              - shards_acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  indices:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/indices.close___CloseIndexResult'
+                  shards_acknowledged:
+                    type: boolean
+                required:
+                  - indices
+                  - shards_acknowledged
       description: ''
     indices.create_data_stream___200:
       content:
@@ -29665,32 +29685,31 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              conditions:
-                type: object
-                additionalProperties:
-                  type: boolean
-              dry_run:
-                type: boolean
-              new_index:
-                type: string
-              old_index:
-                type: string
-              rolled_over:
-                type: boolean
-              shards_acknowledged:
-                type: boolean
-            required:
-              - acknowledged
-              - conditions
-              - dry_run
-              - new_index
-              - old_index
-              - rolled_over
-              - shards_acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  conditions:
+                    type: object
+                    additionalProperties:
+                      type: boolean
+                  dry_run:
+                    type: boolean
+                  new_index:
+                    type: string
+                  old_index:
+                    type: string
+                  rolled_over:
+                    type: boolean
+                  shards_acknowledged:
+                    type: boolean
+                required:
+                  - conditions
+                  - dry_run
+                  - new_index
+                  - old_index
+                  - rolled_over
+                  - shards_acknowledged
       description: ''
     indices.segments___200:
       content:
@@ -29725,18 +29744,17 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              shards_acknowledged:
-                type: boolean
-              index:
-                $ref: '#/components/schemas/_common___IndexName'
-            required:
-              - acknowledged
-              - index
-              - shards_acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  shards_acknowledged:
+                    type: boolean
+                  index:
+                    $ref: '#/components/schemas/_common___IndexName'
+                required:
+                  - index
+                  - shards_acknowledged
       description: ''
     indices.simulate_index_template___200:
       content:
@@ -29763,18 +29781,17 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              acknowledged:
-                type: boolean
-              shards_acknowledged:
-                type: boolean
-              index:
-                $ref: '#/components/schemas/_common___IndexName'
-            required:
-              - acknowledged
-              - index
-              - shards_acknowledged
+            allOf:
+              - $ref: '#/components/schemas/_common___AcknowledgedResponseBase'
+              - type: object
+                properties:
+                  shards_acknowledged:
+                    type: boolean
+                  index:
+                    $ref: '#/components/schemas/_common___IndexName'
+                required:
+                  - index
+                  - shards_acknowledged
       description: ''
     indices.stats___200:
       content:
@@ -29804,7 +29821,14 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/indices._common___IndexPostUpgradeStatus'
+            allOf:
+              - $ref: '#/components/schemas/_common___ShardsOperationResponseBase'
+              - type: object
+                properties:
+                  upgraded_indices:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/indices._common___UpgradeVersionStatus'
       description: ''
     indices.validate_query___200:
       content:
@@ -32461,13 +32485,15 @@ components:
           description: |-
             The total number of non-deleted documents across all primary shards assigned to the selected nodes.
             This number is based on documents in Lucene segments and may include documents from nested fields.
-          type: number
+          type: integer
+          format: int64
         deleted:
           description: |-
             The total number of deleted documents across all primary shards assigned to the selected nodes.
             This number is based on the number of documents stored in Lucene segments.
             OpenSearch reclaims the disk space previously occupied by the deleted Lucene documents when a segment is merged.
-          type: number
+          type: integer
+          format: int64
       required:
         - count
     _common___DocStatus:
@@ -32579,7 +32605,8 @@ components:
       type: object
       properties:
         evictions:
-          type: number
+          type: integer
+          format: int64
         memory_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         memory_size_in_bytes:
@@ -32652,9 +32679,11 @@ components:
       type: object
       properties:
         periodic:
-          type: number
+          type: integer
+          format: int64
         total:
-          type: number
+          type: integer
+          format: int64
         total_time:
           $ref: '#/components/schemas/_common___Duration'
         total_time_in_millis:
@@ -32772,25 +32801,29 @@ components:
       type: object
       properties:
         total:
-          type: number
+          type: integer
+          format: int64
         getTime:
           $ref: '#/components/schemas/_common___Duration'
         time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         exists_total:
-          type: number
+          type: integer
+          format: int64
         exists_time:
           $ref: '#/components/schemas/_common___Duration'
         exists_time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         missing_total:
-          type: number
+          type: integer
+          format: int64
         missing_time:
           $ref: '#/components/schemas/_common___Duration'
         missing_time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         current:
-          type: number
+          type: integer
+          format: int64
       required:
         - current
         - exists_time_in_millis
@@ -32872,25 +32905,31 @@ components:
       type: object
       properties:
         index_total:
-          type: number
+          type: integer
+          format: int64
         index_time:
           $ref: '#/components/schemas/_common___Duration'
         index_time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         index_current:
-          type: number
+          type: integer
+          format: int64
         index_failed:
-          type: number
+          type: integer
+          format: int64
         delete_total:
-          type: number
+          type: integer
+          format: int64
         delete_time:
           $ref: '#/components/schemas/_common___Duration'
         delete_time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         delete_current:
-          type: number
+          type: integer
+          format: int64
         noop_update_total:
-          type: number
+          type: integer
+          format: int64
         is_throttled:
           type: boolean
         throttle_time:
@@ -33015,21 +33054,25 @@ components:
       type: object
       properties:
         current:
-          type: number
+          type: integer
+          format: int64
         current_docs:
-          type: number
+          type: integer
+          format: int64
         current_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         current_size_in_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         total:
-          type: number
+          type: integer
+          format: int64
         total_auto_throttle:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         total_auto_throttle_in_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         total_docs:
-          type: number
+          type: integer
+          format: int64
         total_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         total_size_in_bytes:
@@ -33047,7 +33090,8 @@ components:
         total_time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         unreferenced_file_cleanups_performed:
-          type: number
+          type: integer
+          format: int64
       required:
         - current
         - current_docs
@@ -33333,16 +33377,20 @@ components:
           description: |-
             The total number of entries added to the query cache across all shards assigned to the selected nodes.
             This number includes all current and evicted entries.
-          type: number
+          type: integer
+          format: int64
         cache_size:
           description: The total number of entries currently stored in the query cache across all shards assigned to the selected nodes.
-          type: number
+          type: integer
+          format: int64
         evictions:
           description: The total number of query cache evictions across all shards assigned to the selected nodes.
-          type: number
+          type: integer
+          format: int64
         hit_count:
           description: The total number of query cache hits across all shards assigned to the selected nodes.
-          type: number
+          type: integer
+          format: int64
         memory_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         memory_size_in_bytes:
@@ -33350,10 +33398,12 @@ components:
           $ref: '#/components/schemas/_common___ByteCount'
         miss_count:
           description: The total number of query cache misses across all shards assigned to the selected nodes.
-          type: number
+          type: integer
+          format: int64
         total_count:
           description: The total number of hits and misses stored in the query cache across all shards assigned to the selected nodes.
-          type: number
+          type: integer
+          format: int64
       required:
         - cache_count
         - cache_size
@@ -33375,9 +33425,11 @@ components:
       type: object
       properties:
         current_as_source:
-          type: number
+          type: integer
+          format: int64
         current_as_target:
-          type: number
+          type: integer
+          format: int64
         throttle_time:
           $ref: '#/components/schemas/_common___Duration'
         throttle_time_in_millis:
@@ -33398,15 +33450,18 @@ components:
       type: object
       properties:
         external_total:
-          type: number
+          type: integer
+          format: int64
         external_total_time:
           $ref: '#/components/schemas/_common___Duration'
         external_total_time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         listeners:
-          type: number
+          type: integer
+          format: int64
         total:
-          type: number
+          type: integer
+          format: int64
         total_time:
           $ref: '#/components/schemas/_common___Duration'
         total_time_in_millis:
@@ -33503,13 +33558,16 @@ components:
       properties:
         failed:
           description: The number of failed upload syncs to the remote translog store.
-          type: number
+          type: integer
+          format: int64
         started:
           description: The number of upload syncs to the remote translog store that have started.
-          type: number
+          type: integer
+          format: int64
         succeeded:
           description: The number of successful upload syncs to the remote translog store.
-          type: number
+          type: integer
+          format: int64
       required:
         - failed
         - started
@@ -33546,7 +33604,8 @@ components:
       properties:
         total_rejections:
           description: The total number of requests rejected due to segment store upload backpressure.
-          type: number
+          type: integer
+          format: int64
       required:
         - total_rejections
     _common___RemoteStoreUploadRefreshSizeLagStats:
@@ -33592,7 +33651,6 @@ components:
           $ref: '#/components/schemas/_common___RemoteStoreUploadDownloadStats'
       required:
         - max_refresh_time_lag_in_millis
-        - pressure
         - refresh_size_lag
         - total_time_spent_in_millis
         - total_upload_size
@@ -33600,15 +33658,18 @@ components:
       type: object
       properties:
         evictions:
-          type: number
+          type: integer
+          format: int64
         hit_count:
-          type: number
+          type: integer
+          format: int64
         memory_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         memory_size_in_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         miss_count:
-          type: number
+          type: integer
+          format: int64
       required:
         - evictions
         - hit_count
@@ -33622,9 +33683,11 @@ components:
         time_in_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         current:
-          type: number
+          type: integer
+          format: int64
         total:
-          type: number
+          type: integer
+          format: int64
     _common___ResourceStat:
       type: object
       properties:
@@ -33789,10 +33852,12 @@ components:
       properties:
         open_contexts:
           description: The number of open search contexts.
-          type: number
+          type: integer
+          format: int64
         query_current:
           description: The number of currently running shard query operations.
-          type: number
+          type: integer
+          format: int64
         query_time:
           description: The total amount of time taken to complete all shard query operations.
           $ref: '#/components/schemas/_common___Duration'
@@ -33801,10 +33866,12 @@ components:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         query_total:
           description: The total number of shard query operations.
-          type: number
+          type: integer
+          format: int64
         concurrent_query_total:
           description: The total number of query operations using concurrent segment search.
-          type: number
+          type: integer
+          format: int64
         concurrent_query_time:
           $ref: '#/components/schemas/_common___Duration'
         concurrent_query_time_in_millis:
@@ -33812,13 +33879,16 @@ components:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         concurrent_query_current:
           description: The number of currently running query operations using concurrent segment search.
-          type: number
+          type: integer
+          format: int64
         concurrent_avg_slice_count:
           description: The average slice count of all search requests. This is computed as the total slice count divided by the total number of concurrent search requests.
-          type: number
+          type: integer
+          format: int64
         fetch_current:
           description: The number of currently running shard fetch operations.
-          type: number
+          type: integer
+          format: int64
         fetch_time:
           description: The total amount of time taken to complete all shard fetch operations.
           $ref: '#/components/schemas/_common___Duration'
@@ -33827,10 +33897,12 @@ components:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         fetch_total:
           description: The total number of shard fetch operations.
-          type: number
+          type: integer
+          format: int64
         scroll_current:
           description: The number of shard scroll operations that are currently running.
-          type: number
+          type: integer
+          format: int64
         scroll_time:
           description: The total amount of time taken to complete all shard scroll operations.
           $ref: '#/components/schemas/_common___Duration'
@@ -33839,10 +33911,12 @@ components:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         scroll_total:
           description: The total number of shard scroll operations.
-          type: number
+          type: integer
+          format: int64
         point_in_time_total:
           description: The total number of shard Point in Time (PIT) contexts created (completed and active) since the node last restarted.
-          type: number
+          type: integer
+          format: int64
         point_in_time_time:
           $ref: '#/components/schemas/_common___Duration'
         point_in_time_time_in_millis:
@@ -33850,10 +33924,12 @@ components:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         point_in_time_current:
           description: The number of currently open shard PIT contexts.
-          type: number
+          type: integer
+          format: int64
         suggest_current:
           description: The number of currently running shard suggest operations.
-          type: number
+          type: integer
+          format: int64
         suggest_time:
           description: The total amount of time take to complete all shard suggest operations.
           $ref: '#/components/schemas/_common___Duration'
@@ -33862,9 +33938,11 @@ components:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         suggest_total:
           description: The total number of shard suggest operations.
-          type: number
+          type: integer
+          format: int64
         search_idle_reactivate_count_total:
-          type: number
+          type: integer
+          format: int64
         request:
           type: object
           description: Statistics related to coordinator search operations for the node.
@@ -33893,24 +33971,42 @@ components:
         - dfs_query_then_fetch
         - query_then_fetch
     _common___SegmentReplicationStats:
-      type: object
-      properties:
-        max_bytes_behind:
-          $ref: '#/components/schemas/_common___ByteCount'
-        max_replication_lag:
-          $ref: '#/components/schemas/_common___ByteCount'
-        total_bytes_behind:
-          $ref: '#/components/schemas/_common___ByteCount'
-      required:
-        - max_bytes_behind
-        - max_replication_lag
-        - total_bytes_behind
+      x-version-added: 2.10.0
+      oneOf:
+        - x-version-added: 2.10.0
+          x-version-removed: 2.12.0
+          type: object
+          properties:
+            max_bytes_behind:
+              $ref: '#/components/schemas/_common___HumanReadableByteCount'
+            max_replication_lag:
+              $ref: '#/components/schemas/_common___Duration'
+            total_bytes_behind:
+              $ref: '#/components/schemas/_common___HumanReadableByteCount'
+          required:
+            - max_bytes_behind
+            - max_replication_lag
+            - total_bytes_behind
+        - x-version-added: 2.12.0
+          type: object
+          properties:
+            max_bytes_behind:
+              $ref: '#/components/schemas/_common___ByteCount'
+            max_replication_lag:
+              $ref: '#/components/schemas/_common___DurationValueUnitMillis'
+            total_bytes_behind:
+              $ref: '#/components/schemas/_common___ByteCount'
+          required:
+            - max_bytes_behind
+            - max_replication_lag
+            - total_bytes_behind
     _common___SegmentsStats:
       type: object
       properties:
         count:
           description: The total number of segments across all shards assigned to the selected nodes.
-          type: number
+          type: integer
+          format: int32
         doc_values_memory:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         doc_values_memory_in_bytes:
@@ -33937,7 +34033,7 @@ components:
           $ref: '#/components/schemas/_common___ByteCount'
         max_unsafe_auto_id_timestamp:
           description: The Unix timestamp, in milliseconds, of the most recently retried indexing request.
-          type: number
+          $ref: '#/components/schemas/_common___EpochTimeUnitMillis'
         memory:
           description: The total amount of memory used for segments across all shards assigned to the selected nodes.
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
@@ -33983,6 +34079,7 @@ components:
         remote_store:
           $ref: '#/components/schemas/_common___RemoteStoreStats'
         segment_replication:
+          x-version-added: 2.10.0
           $ref: '#/components/schemas/_common___SegmentReplicationStats'
       required:
         - count
@@ -34312,9 +34409,11 @@ components:
       type: object
       properties:
         earliest_last_modified_age:
-          type: number
+          type: integer
+          format: int64
         operations:
-          type: number
+          type: integer
+          format: int32
         remote_store:
           $ref: '#/components/schemas/_common___RemoteStoreTranslogStats'
         size:
@@ -34322,7 +34421,8 @@ components:
         size_in_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         uncommitted_operations:
-          type: number
+          type: integer
+          format: int32
         uncommitted_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         uncommitted_size_in_bytes:
@@ -34403,9 +34503,11 @@ components:
       type: object
       properties:
         current:
-          type: number
+          type: integer
+          format: int64
         total:
-          type: number
+          type: integer
+          format: int64
         total_time:
           $ref: '#/components/schemas/_common___Duration'
         total_time_in_millis:
@@ -47736,7 +47838,8 @@ components:
         transport_address:
           $ref: '#/components/schemas/_common___TransportAddress'
         weight_ranking:
-          type: number
+          type: integer
+          format: int32
       required:
         - attributes
         - id
@@ -47804,7 +47907,8 @@ components:
         transport_address:
           $ref: '#/components/schemas/_common___TransportAddress'
         weight_ranking:
-          type: number
+          type: integer
+          format: int32
       required:
         - deciders
         - node_attributes
@@ -47833,7 +47937,8 @@ components:
         path:
           type: string
         total:
-          type: number
+          type: integer
+          format: int64
         shards:
           type: array
           items:
@@ -47855,7 +47960,8 @@ components:
         details:
           type: string
         failed_allocation_attempts:
-          type: number
+          type: integer
+          format: int32
         delayed:
           type: boolean
         allocation_status:
@@ -47899,26 +48005,34 @@ components:
       x-version-added: '2.5'
       properties:
         active_shards:
-          type: number
+          type: integer
+          format: int32
         initializing_shards:
-          type: number
+          type: integer
+          format: int32
         relocating_shards:
-          type: number
+          type: integer
+          format: int32
         unassigned_shards:
-          type: number
+          type: integer
+          format: int32
         data_nodes:
-          type: number
+          type: integer
+          format: int32
         weight:
-          type: number
+          type: integer
+          format: int32
     cluster.health___HealthResponseBody:
       type: object
       properties:
         active_primary_shards:
           description: The number of active primary shards.
-          type: number
+          type: integer
+          format: int32
         active_shards:
           description: The total number of active primary and replica shards.
-          type: number
+          type: integer
+          format: int32
         active_shards_percent:
           $ref: '#/components/schemas/_common___PercentageString'
         active_shards_percent_as_number:
@@ -47933,7 +48047,8 @@ components:
           $ref: '#/components/schemas/_common___Name'
         delayed_unassigned_shards:
           description: The number of shards whose allocation has been delayed by the timeout settings.
-          type: number
+          type: integer
+          format: int32
         discovered_master:
           description: True if the cluster-manager node has been discovered.
           type: boolean
@@ -47948,22 +48063,28 @@ components:
             $ref: '#/components/schemas/cluster.health___IndexHealthStats'
         initializing_shards:
           description: The number of shards that are under initialization.
-          type: number
+          type: integer
+          format: int32
         number_of_data_nodes:
           description: The number of nodes that are dedicated data nodes.
-          type: number
+          type: integer
+          format: int32
         number_of_in_flight_fetch:
           description: The number of unfinished fetches.
-          type: number
+          type: integer
+          format: int32
         number_of_nodes:
           description: The number of nodes within the cluster.
-          type: number
+          type: integer
+          format: int32
         number_of_pending_tasks:
           description: The number of cluster-level changes that have not yet been executed.
-          type: number
+          type: integer
+          format: int32
         relocating_shards:
           description: The number of shards that are under relocation.
-          type: number
+          type: integer
+          format: int32
         status:
           $ref: '#/components/schemas/_common___HealthStatus'
         task_max_waiting_in_queue:
@@ -47975,7 +48096,8 @@ components:
           type: boolean
         unassigned_shards:
           description: The number of shards that are not allocated.
-          type: number
+          type: integer
+          format: int32
       required:
         - active_primary_shards
         - active_shards
@@ -47996,17 +48118,23 @@ components:
       type: object
       properties:
         active_primary_shards:
-          type: number
+          type: integer
+          format: int32
         active_shards:
-          type: number
+          type: integer
+          format: int32
         initializing_shards:
-          type: number
+          type: integer
+          format: int32
         number_of_replicas:
-          type: number
+          type: integer
+          format: int32
         number_of_shards:
-          type: number
+          type: integer
+          format: int32
         relocating_shards:
-          type: number
+          type: integer
+          format: int32
         shards:
           type: object
           additionalProperties:
@@ -48014,7 +48142,8 @@ components:
         status:
           $ref: '#/components/schemas/_common___HealthStatus'
         unassigned_shards:
-          type: number
+          type: integer
+          format: int32
       required:
         - active_primary_shards
         - active_shards
@@ -48035,17 +48164,21 @@ components:
       type: object
       properties:
         active_shards:
-          type: number
+          type: integer
+          format: int32
         initializing_shards:
-          type: number
+          type: integer
+          format: int32
         primary_active:
           type: boolean
         relocating_shards:
-          type: number
+          type: integer
+          format: int32
         status:
           $ref: '#/components/schemas/_common___HealthStatus'
         unassigned_shards:
-          type: number
+          type: integer
+          format: int32
       required:
         - active_shards
         - initializing_shards
@@ -48061,7 +48194,8 @@ components:
           type: boolean
         insert_order:
           description: The number that represents when the task has been inserted into the task queue.
-          type: number
+          type: integer
+          format: int32
         priority:
           description: |-
             The priority of the pending task.
@@ -48105,9 +48239,11 @@ components:
         server_name:
           type: string
         num_proxy_sockets_connected:
-          type: number
+          type: integer
+          format: int32
         max_proxy_socket_connections:
-          type: number
+          type: integer
+          format: int32
       required:
         - connected
         - initial_connect_timeout
@@ -48127,9 +48263,11 @@ components:
         connected:
           type: boolean
         max_connections_per_cluster:
-          type: number
+          type: integer
+          format: int32
         num_nodes_connected:
-          type: number
+          type: integer
+          format: int64
         initial_connect_timeout:
           $ref: '#/components/schemas/_common___Duration'
         skip_unavailable:
@@ -48150,14 +48288,48 @@ components:
       type: object
       properties:
         cancel:
+          description: |-
+            Cancel allocation of a shard (or recovery). Accepts `index` and `shard` for index
+            name and shard number, and `node` for the node to cancel the shard allocation
+            on. This can be used to force resynchronization of existing replicas from the
+            primary shard by cancelling them and allowing them to be reinitialized
+            through the standard recovery process. By default only replica shard
+            allocations can be cancelled. If it is necessary to cancel the allocation of
+            a primary shard then the `allow_primary` flag must also be included in the
+            request.
           $ref: '#/components/schemas/cluster.reroute___CommandCancelAction'
         move:
+          description: |-
+            Move a started shard from one node to another node. Accepts `index` and `shard`
+            for index name and shard number, `from_node` for the node to move the shard
+            from, and `to_node` for the node to move the shard to.
           $ref: '#/components/schemas/cluster.reroute___CommandMoveAction'
         allocate_replica:
+          description: |-
+            Allocate an unassigned replica shard to a node. Accepts `index` and `shard` for
+            index name and shard number, and `node` to allocate the shard to. Takes
+            allocation deciders into account.
           $ref: '#/components/schemas/cluster.reroute___CommandAllocateReplicaAction'
         allocate_stale_primary:
+          description: |-
+            Allocate a primary shard to a node that holds a stale copy. Accepts `index`
+            and `shard` for index name and shard number, and `node` to allocate the shard to.
+            Using this command may lead to data loss for the provided shard id. If a node
+            which has the good copy of the data rejoins the cluster later on, that data
+            will be deleted or overwritten with the data of the stale copy that was
+            forcefully allocated with this command. To ensure that these implications are
+            well-understood, this command requires the flag `accept_data_loss` to be
+            explicitly set to true.
           $ref: '#/components/schemas/cluster.reroute___CommandAllocatePrimaryAction'
         allocate_empty_primary:
+          description: |-
+            Allocate an empty primary shard to a node. Accepts `index` and `shard` for
+            index name and shard number, and `node` to allocate the shard to. Using this
+            command leads to a complete loss of all data that was indexed into this
+            shard, if it was previously started. If a node which has a copy of the data
+            rejoins the cluster later on, that data will be deleted. To ensure that these
+            implications are well-understood, this command requires the flag
+            `accept_data_loss` to be explicitly set to true.
           $ref: '#/components/schemas/cluster.reroute___CommandAllocatePrimaryAction'
     cluster.reroute___CommandAllocatePrimaryAction:
       type: object
@@ -48165,7 +48337,8 @@ components:
         index:
           $ref: '#/components/schemas/_common___IndexName'
         shard:
-          type: number
+          type: integer
+          format: int32
         node:
           type: string
         accept_data_loss:
@@ -48182,7 +48355,8 @@ components:
         index:
           $ref: '#/components/schemas/_common___IndexName'
         shard:
-          type: number
+          type: integer
+          format: int32
         node:
           type: string
       required:
@@ -48195,7 +48369,8 @@ components:
         index:
           $ref: '#/components/schemas/_common___IndexName'
         shard:
-          type: number
+          type: integer
+          format: int32
         node:
           type: string
         allow_primary:
@@ -48210,7 +48385,8 @@ components:
         index:
           $ref: '#/components/schemas/_common___IndexName'
         shard:
-          type: number
+          type: integer
+          format: int32
         from_node:
           description: The node to move the shard from
           type: string
@@ -48272,7 +48448,8 @@ components:
         node:
           $ref: '#/components/schemas/_common___NodeName'
         shard:
-          type: number
+          type: integer
+          format: int32
         from_node:
           $ref: '#/components/schemas/_common___NodeName'
         to_node:
@@ -48394,7 +48571,8 @@ components:
           $ref: '#/components/schemas/_common___CompletionStats'
         count:
           description: Total number of indexes with shards assigned to selected nodes.
-          type: number
+          type: integer
+          format: int64
         docs:
           $ref: '#/components/schemas/_common___DocStats'
         fielddata:
@@ -48421,21 +48599,27 @@ components:
           $ref: '#/components/schemas/cluster.stats___ClusterIndicesShardsIndex'
         primaries:
           description: Number of primary shards assigned to selected nodes.
-          type: number
+          type: integer
+          format: int32
         replication:
           description: Ratio of replica shards to primary shards across all selected nodes.
-          type: number
+          type: integer
+          format: int32
         total:
           description: Total number of shards assigned to selected nodes.
-          type: number
+          type: integer
+          format: int32
     cluster.stats___ClusterIndicesShardsIndex:
       type: object
       properties:
         primaries:
+          description: Contains statistics about the number of primary shards assigned to selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterShardMetrics'
         replication:
+          description: Contains statistics about the number of replication shards assigned to selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterShardMetrics'
         shards:
+          description: Contains statistics about the number of shards assigned to selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterShardMetrics'
       required:
         - primaries
@@ -48445,7 +48629,8 @@ components:
       type: object
       properties:
         number_of_pipelines:
-          type: number
+          type: integer
+          format: int32
         processor_stats:
           type: object
           additionalProperties:
@@ -48464,7 +48649,8 @@ components:
           $ref: '#/components/schemas/cluster.stats___ClusterJvmMemory'
         threads:
           description: Number of active threads in use by JVM across all selected nodes.
-          type: number
+          type: integer
+          format: int64
         versions:
           description: Contains statistics about the JVM versions used by selected nodes.
           type: array
@@ -48501,7 +48687,8 @@ components:
           type: boolean
         count:
           description: Total number of selected nodes using JVM.
-          type: number
+          type: integer
+          format: int32
         using_bundled_jdk:
           description: If `true`, a bundled JDK is in use by JVM.
           type: boolean
@@ -48530,12 +48717,14 @@ components:
           description: Contains statistics about the HTTP network types used by selected nodes.
           type: object
           additionalProperties:
-            type: number
+            type: integer
+            format: int32
         transport_types:
           description: Contains statistics about the transport network types used by selected nodes.
           type: object
           additionalProperties:
-            type: number
+            type: integer
+            format: int32
       required:
         - http_types
         - transport_types
@@ -48543,39 +48732,55 @@ components:
       type: object
       properties:
         coordinating_only:
-          type: number
+          type: integer
+          format: int32
         data:
-          type: number
+          type: integer
+          format: int32
         data_cold:
-          type: number
+          type: integer
+          format: int32
         data_content:
-          type: number
+          type: integer
+          format: int32
         data_frozen:
-          type: number
+          type: integer
+          format: int32
         data_hot:
-          type: number
+          type: integer
+          format: int32
         data_warm:
-          type: number
+          type: integer
+          format: int32
         ingest:
-          type: number
+          type: integer
+          format: int32
         master:
-          type: number
+          type: integer
+          format: int32
         cluster_manager:
-          type: number
+          type: integer
+          format: int32
           x-version-added: '2.0'
         ml:
-          type: number
+          type: integer
+          format: int32
         remote_cluster_client:
-          type: number
+          type: integer
+          format: int32
         search:
-          type: number
+          type: integer
+          format: int32
           x-version-added: '2.4'
         total:
-          type: number
+          type: integer
+          format: int32
         transform:
-          type: number
+          type: integer
+          format: int32
         voting_only:
-          type: number
+          type: integer
+          format: int32
       required:
         - coordinating_only
         - data
@@ -48587,23 +48792,29 @@ components:
       type: object
       properties:
         count:
+          description: Contains counts for nodes selected by the request's node filters.
           $ref: '#/components/schemas/cluster.stats___ClusterNodeCount'
         discovery_types:
           description: Contains statistics about the discovery types used by selected nodes.
           type: object
           additionalProperties:
-            type: number
+            type: integer
+            format: int32
         fs:
+          description: Contains statistics about file stores by selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterFileSystem'
         indexing_pressure:
           $ref: '#/components/schemas/cluster.stats___IndexingPressure'
         ingest:
           $ref: '#/components/schemas/cluster.stats___ClusterIngest'
         jvm:
+          description: Contains statistics about the Java Virtual Machines (JVMs) used by selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterJvm'
         network_types:
+          description: Contains statistics about the transport and HTTP networks used by selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterNetworkTypes'
         os:
+          description: Contains statistics about the operating systems used by selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterOperatingSystem'
         packaging_types:
           description: Contains statistics about OpenSearch distributions installed on selected nodes.
@@ -48618,6 +48829,7 @@ components:
           items:
             $ref: '#/components/schemas/_common___PluginStats'
         process:
+          description: Contains statistics about processes used by selected nodes.
           $ref: '#/components/schemas/cluster.stats___ClusterProcess'
         versions:
           description: Array of OpenSearch versions used on selected nodes.
@@ -48632,7 +48844,8 @@ components:
             Number of processors used to calculate thread pool size across all selected nodes.
             This number can be set with the processors setting of a node and defaults to the number of processors reported by the operating system.
             In both cases, this number will never be larger than 32.
-          type: number
+          type: integer
+          format: int32
         architectures:
           description: Contains statistics about processor architectures (for example, x86_64 or aarch64) used by selected nodes.
           type: array
@@ -48640,7 +48853,8 @@ components:
             $ref: '#/components/schemas/cluster.stats___ClusterOperatingSystemArchitecture'
         available_processors:
           description: Number of processors available to JVM across all selected nodes.
-          type: number
+          type: integer
+          format: int32
         mem:
           $ref: '#/components/schemas/cluster.stats___OperatingSystemMemoryInfo'
         names:
@@ -48667,7 +48881,8 @@ components:
           type: string
         count:
           description: Number of selected nodes using the architecture.
-          type: number
+          type: integer
+          format: int32
       required:
         - arch
         - count
@@ -48676,7 +48891,8 @@ components:
       properties:
         count:
           description: Number of selected nodes using the operating system.
-          type: number
+          type: integer
+          format: int32
         name:
           $ref: '#/components/schemas/_common___Name'
       required:
@@ -48687,7 +48903,8 @@ components:
       properties:
         count:
           description: Number of selected nodes using the operating system.
-          type: number
+          type: integer
+          format: int32
         pretty_name:
           $ref: '#/components/schemas/_common___Name'
       required:
@@ -48720,17 +48937,20 @@ components:
           description: |-
             Average number of concurrently open file descriptors.
             Returns `-1` if not supported.
-          type: number
+          type: integer
+          format: int64
         max:
           description: |-
             Maximum number of concurrently open file descriptors allowed across all selected nodes.
             Returns `-1` if not supported.
-          type: number
+          type: integer
+          format: int64
         min:
           description: |-
             Minimum number of concurrently open file descriptors across all selected nodes.
             Returns -1 if not supported.
-          type: number
+          type: integer
+          format: int64
       required:
         - avg
         - max
@@ -48739,11 +48959,14 @@ components:
       type: object
       properties:
         count:
-          type: number
+          type: integer
+          format: int64
         current:
-          type: number
+          type: integer
+          format: int64
         failed:
-          type: number
+          type: integer
+          format: int64
         time:
           $ref: '#/components/schemas/_common___Duration'
         time_in_millis:
@@ -48759,12 +48982,15 @@ components:
         avg:
           description: Mean number of shards in an index, counting only shards assigned to selected nodes.
           type: number
+          format: double
         max:
           description: Maximum number of shards in an index, counting only shards assigned to selected nodes.
           type: number
+          format: double
         min:
           description: Minimum number of shards in an index, counting only shards assigned to selected nodes.
           type: number
+          format: double
       required:
         - avg
         - max
@@ -48776,22 +49002,12 @@ components:
           $ref: '#/components/schemas/_common___Name'
         count:
           description: The number of occurrences of the field type in selected nodes.
-          type: number
+          type: integer
+          format: int32
         index_count:
           description: The number of indexes containing the field type in selected nodes.
-          type: number
-        indexed_vector_count:
-          description: For `dense_vector` field types, number of indexed vector types in selected nodes.
-          type: number
-        indexed_vector_dim_max:
-          description: For `dense_vector` field types, the maximum dimension of all indexed vector types in selected nodes.
-          type: number
-        indexed_vector_dim_min:
-          description: For `dense_vector` field types, the minimum dimension of all indexed vector types in selected nodes.
-          type: number
-        script_count:
-          description: The number of fields that declare a script.
-          type: number
+          type: integer
+          format: int32
       required:
         - count
         - index_count
@@ -48804,17 +49020,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/cluster.stats___FieldTypes'
-        total_field_count:
-          description: Total number of fields in all non-system indexes.
-          type: number
-        total_deduplicated_field_count:
-          description: Total number of fields in all non-system indexes, accounting for mapping deduplication.
-          type: number
-        total_deduplicated_mapping_size:
-          $ref: '#/components/schemas/_common___HumanReadableByteCount'
-        total_deduplicated_mapping_size_in_bytes:
-          description: Total size of all mappings, in bytes, after deduplication and compression.
-          $ref: '#/components/schemas/_common___ByteCount'
       required:
         - field_types
     cluster.stats___IndexingPressure:
@@ -48879,9 +49084,11 @@ components:
       type: object
       properties:
         index_count:
-          type: number
+          type: integer
+          format: int32
         primary_shard_count:
-          type: number
+          type: integer
+          format: int32
         total_primary_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         version:
@@ -48910,7 +49117,8 @@ components:
       properties:
         count:
           description: Number of selected nodes using the distribution flavor and file type.
-          type: number
+          type: integer
+          format: int32
         flavor:
           description: Type of OpenSearch distribution. This is always `default`.
           type: string
@@ -48956,29 +49164,6 @@ components:
         - total_in_bytes
         - used_in_bytes
         - used_percent
-    cluster.stats___StatsResponseBase:
-      allOf:
-        - $ref: '#/components/schemas/nodes._common___NodesResponseBase'
-        - type: object
-          properties:
-            cluster_name:
-              $ref: '#/components/schemas/_common___Name'
-            cluster_uuid:
-              $ref: '#/components/schemas/_common___Uuid'
-            indices:
-              $ref: '#/components/schemas/cluster.stats___ClusterIndices'
-            nodes:
-              $ref: '#/components/schemas/cluster.stats___ClusterNodes'
-            status:
-              $ref: '#/components/schemas/_common___HealthStatus'
-            timestamp:
-              description: Unix timestamp, in milliseconds, for the last time the cluster statistics were refreshed.
-              type: number
-          required:
-            - cluster_name
-            - cluster_uuid
-            - status
-            - timestamp
     cluster.weighted_routing___Weights:
       allOf:
         - $ref: '#/components/schemas/cluster.weighted_routing___WeightsBase'
@@ -49803,15 +49988,6 @@ components:
       properties:
         index:
           $ref: '#/components/schemas/indices._common___SlowlogThresholdLevels'
-    indices._common___IndexPostUpgradeStatus:
-      type: object
-      properties:
-        _shards:
-          $ref: '#/components/schemas/_common___ShardStatistics'
-        upgraded_indices:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/indices._common___UpgradeVersionStatus'
     indices._common___IndexRouting:
       type: object
       properties:
@@ -50776,22 +50952,6 @@ components:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         age:
           $ref: '#/components/schemas/_common___Duration'
-    indices._common___UpgradeRequest:
-      type: object
-      properties:
-        allow_no_indices:
-          type: boolean
-        expand_wildcards:
-          type: string
-          enum:
-            - all
-            - closed
-            - none
-            - open
-        ignore_unavailable:
-          type: boolean
-        wait_for_completion:
-          type: boolean
     indices._common___UpgradeStatus:
       type: object
       properties:
@@ -50860,13 +51020,17 @@ components:
       type: object
       properties:
         end_offset:
-          type: number
+          type: integer
+          format: int32
         position:
-          type: number
+          type: integer
+          format: int32
         positionLength:
-          type: number
+          type: integer
+          format: int32
         start_offset:
-          type: number
+          type: integer
+          format: int32
         token:
           type: string
         type:
@@ -50895,17 +51059,22 @@ components:
         bytes:
           type: string
         end_offset:
-          type: number
+          type: integer
+          format: int32
         keyword:
           type: boolean
         position:
-          type: number
+          type: integer
+          format: int32
         positionLength:
-          type: number
+          type: integer
+          format: int32
         start_offset:
-          type: number
+          type: integer
+          format: int32
         termFrequency:
-          type: number
+          type: integer
+          format: int32
         token:
           type: string
         type:
@@ -51014,11 +51183,13 @@ components:
       type: object
       properties:
         length:
-          type: number
+          type: integer
+          format: int64
         name:
           type: string
         recovered:
-          type: number
+          type: integer
+          format: int64
       required:
         - length
         - name
@@ -51059,11 +51230,14 @@ components:
         percent:
           $ref: '#/components/schemas/_common___PercentageString'
         recovered:
-          type: number
+          type: integer
+          format: int64
         reused:
-          type: number
+          type: integer
+          format: int64
         total:
-          type: number
+          type: integer
+          format: int64
       required:
         - percent
         - recovered
@@ -51162,7 +51336,8 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
+          format: int32
         index:
           $ref: '#/components/schemas/indices.recovery___RecoveryIndexStatus'
         primary:
@@ -51211,11 +51386,14 @@ components:
         percent:
           $ref: '#/components/schemas/_common___PercentageString'
         recovered:
-          type: number
+          type: integer
+          format: int32
         total:
-          type: number
+          type: integer
+          format: int32
         total_on_start:
-          type: number
+          type: integer
+          format: int32
         total_time:
           $ref: '#/components/schemas/_common___Duration'
         total_time_in_millis:
@@ -51291,9 +51469,11 @@ components:
         max_age_millis:
           $ref: '#/components/schemas/_common___DurationValueUnitMillis'
         min_docs:
-          type: number
+          type: integer
+          format: int64
         max_docs:
-          type: number
+          type: integer
+          format: int64
         max_size:
           $ref: '#/components/schemas/_common___HumanReadableByteCount'
         max_size_bytes:
@@ -51311,9 +51491,11 @@ components:
         min_primary_shard_size_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         max_primary_shard_docs:
-          type: number
+          type: integer
+          format: int64
         min_primary_shard_docs:
-          type: number
+          type: integer
+          format: int64
     indices.segments___IndexSegment:
       type: object
       properties:
@@ -51383,11 +51565,13 @@ components:
       type: object
       properties:
         num_committed_segments:
-          type: number
+          type: integer
+          format: int32
         routing:
           $ref: '#/components/schemas/indices.segments___ShardSegmentRouting'
         num_search_segments:
-          type: number
+          type: integer
+          format: int32
         segments:
           type: object
           additionalProperties:
@@ -51416,6 +51600,7 @@ components:
         store_exception:
           $ref: '#/components/schemas/indices.shard_stores___ShardStoreException'
       additionalProperties:
+        title: nodes
         $ref: '#/components/schemas/_common___NodeAttributes'
       required:
         - allocation
@@ -51435,6 +51620,20 @@ components:
       required:
         - reason
         - type
+    indices.shard_stores___ShardStoreStatus:
+      oneOf:
+        - type: string
+          const: all
+          description: Return all shards, regardless of health status.
+        - type: string
+          const: green
+          description: The primary shard and all replica shards are assigned.
+        - type: string
+          const: red
+          description: The primary shard is unassigned.
+        - type: string
+          const: yellow
+          description: One or more replica shards are unassigned.
     indices.shard_stores___ShardStoreWrapper:
       type: object
       properties:
@@ -51444,13 +51643,6 @@ components:
             $ref: '#/components/schemas/indices.shard_stores___ShardStore'
       required:
         - stores
-    indices.shard_stores___Status:
-      type: string
-      enum:
-        - all
-        - green
-        - red
-        - yellow
     indices.simulate_template___Overlapping:
       type: object
       properties:
@@ -51585,11 +51777,13 @@ components:
       type: object
       properties:
         generation:
-          type: number
+          type: integer
+          format: int32
         id:
           $ref: '#/components/schemas/_common___Id'
         num_docs:
-          type: number
+          type: integer
+          format: int64
         user_data:
           type: object
           additionalProperties:
@@ -51615,7 +51809,8 @@ components:
         average_size_in_bytes:
           $ref: '#/components/schemas/_common___ByteCount'
         count:
-          type: number
+          type: integer
+          format: int64
       required:
         - description
         - size_in_bytes
@@ -51627,7 +51822,8 @@ components:
         retaining_seq_no:
           $ref: '#/components/schemas/_common___SequenceNumber'
         timestamp:
-          type: number
+          type: integer
+          format: int64
         source:
           type: string
       required:
@@ -51652,7 +51848,8 @@ components:
       type: object
       properties:
         primary_term:
-          type: number
+          type: integer
+          format: int64
         version:
           $ref: '#/components/schemas/_common___VersionNumber'
         leases:
@@ -51691,9 +51888,11 @@ components:
       type: object
       properties:
         global_checkpoint:
-          type: number
+          type: integer
+          format: int64
         local_checkpoint:
-          type: number
+          type: integer
+          format: int64
         max_seq_no:
           $ref: '#/components/schemas/_common___SequenceNumber'
       required:
@@ -54590,6 +54789,7 @@ components:
       type: object
       properties:
         _nodes:
+          description: Contains statistics about the number of nodes selected by the request's node filters.
           $ref: '#/components/schemas/_common___NodeStatistics'
     nodes._common___OperatingSystem:
       type: object
