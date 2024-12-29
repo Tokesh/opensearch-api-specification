@@ -132,6 +132,14 @@ jobs:
         with:
           path: coverage
 
+      - name: Display Content of JSON Files
+        run: |
+          echo "Displaying content of all test-spec-coverage JSON files..."
+          for file in $(find ./ -name "test-spec-coverage-*.json"); do
+            echo "Contents of $file:"
+            cat $file | jq .
+          done
+
       - name: Collect Test File Names
         run: |
           files=$(find tests/. -name "*.yaml" | xargs realpath)
@@ -162,6 +170,7 @@ jobs:
             ' $(find ./ -name "test-spec-coverage-*.json") > ./coverage/missing_paths.txt
           cat ./coverage/missing_paths.txt
           echo "Finished displaying missing paths"
+
       - name: Output Full Operations List
         run: |
           echo "Outputting full operations list for debugging..."
@@ -183,17 +192,6 @@ jobs:
               .[]
             ' $(find ./ -name "test-spec-coverage-*.json") > ./coverage/unique_operations.txt
           cat ./coverage/unique_operations.txt
-
-      - name: Output Full Operations List
-        run: |
-          echo "Outputting full operations list for debugging..."
-          jq -r -sc '
-              (map(.operations) | add) as $all_operations |
-              $all_operations |
-              map("\(.method) \(.path)") |
-              .[]
-            ' $(find ./ -name "test-spec-coverage-*.json") > ./coverage/all_operations.txt
-          cat ./coverage/all_operations.txt
 
       - name: Combine Test Coverage Data
         shell: bash -eo pipefail {0}
