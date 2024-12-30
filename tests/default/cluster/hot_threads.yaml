@@ -1,4 +1,4 @@
-$schema: ../../../../json_schemas/test_story.schema.yaml
+$schema: ../../../json_schemas/test_story.schema.yaml
 
 description: Provides information about busy JVM threads for selected cluster nodes.
 chapters:
