@@ -25,7 +25,6 @@ jobs:
       matrix:
         entry:
           - version: 2.18.0
-            ref: '@sha256:5864bcbb2098fe92b014065619e99b1ec36310d63eb4889865998ae8b3f8e565'
 
     name: test-opensearch-spec (version=${{ matrix.entry.version }}, hub=${{ matrix.entry.hub || 'opensearchproject' }}, tests=${{ matrix.entry.tests || 'default' }})
     runs-on: ubuntu-latest
